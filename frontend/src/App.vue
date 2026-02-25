@@ -14,7 +14,7 @@
       <div class="form-box">
         <h2>{{ editMode ? '✏️ Edit Item' : '➕ Add Item' }}</h2>
         <div class="form-grid">
-          <input v-model="form.project" placeholder="Project / Location" />
+          <input v-model="form.project" placeholder="Project Location" />
           <input v-model="form.material" placeholder="Materials" />
           <input v-model="form.unit" placeholder="Unit (PCS, GAL...)" />
           <input v-model.number="form.quantity" type="number" placeholder="Quantity" />
@@ -59,7 +59,7 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Project / Location</th>
+              <th>Project Location</th>
               <th>Materials</th>
               <th>Unit</th>
               <th>Quantity</th>
@@ -101,7 +101,7 @@
           <input type="date" v-model="wDateFrom" />
           <label>To:</label>
           <input type="date" v-model="wDateTo" />
-          <button @click="wDateFrom=''; wDateTo=''; wSelectedPeriod=''; wSelectedMaterial=''" class="btn-cancel">Clear</button>
+          <button @click="clearWithdrawalDates" class="btn-cancel">Clear</button>
         </div>
         <select v-model="wSelectedMaterial" class="material-select">
           <option value="">-- All Materials --</option>
@@ -124,11 +124,11 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Project / Location (Stock)</th>
+              <th>Project Location</th>
               <th>Material</th>
               <th>Unit</th>
               <th>Qty Used</th>
-              <th>Withdrawn To (Location)</th>
+              <th>ORIGIN.PROJECT LOCATION</th>
               <th>Date</th>
               <th>Remarks</th>
             </tr>
@@ -205,20 +205,24 @@ export default {
       const s = this.search.toLowerCase();
       if (s) result = result.filter(i => i.project?.toLowerCase().includes(s) || i.material?.toLowerCase().includes(s));
       if (this.selectedMaterial) result = result.filter(i => i.material === this.selectedMaterial);
-      if (this.dateFrom) result = result.filter(i => new Date(i.created_at) >= new Date(this.dateFrom));
+      if (this.dateFrom) {
+        result = result.filter(i => this.toLocalDate(i.created_at) >= this.dateFrom);
+      }
       if (this.dateTo) {
-        const to = new Date(this.dateTo); to.setHours(23, 59, 59);
-        result = result.filter(i => new Date(i.created_at) <= to);
+        result = result.filter(i => this.toLocalDate(i.created_at) <= this.dateTo);
       }
       return result;
     },
     filteredWithdrawals() {
       let result = this.withdrawals;
-      if (this.wSelectedMaterial) result = result.filter(w => w.material === this.wSelectedMaterial);
-      if (this.wDateFrom) result = result.filter(w => new Date(w.withdraw_date) >= new Date(this.wDateFrom));
+      if (this.wSelectedMaterial) {
+        result = result.filter(w => w.material === this.wSelectedMaterial);
+      }
+      if (this.wDateFrom) {
+        result = result.filter(w => this.toLocalDate(w.withdraw_date) >= this.wDateFrom);
+      }
       if (this.wDateTo) {
-        const to = new Date(this.wDateTo); to.setHours(23, 59, 59);
-        result = result.filter(w => new Date(w.withdraw_date) <= to);
+        result = result.filter(w => this.toLocalDate(w.withdraw_date) <= this.wDateTo);
       }
       return result;
     },
@@ -245,6 +249,21 @@ export default {
     }
   },
   methods: {
+    toLocalDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    },
+    getTodayStr() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    },
     async fetchItems() {
       const res = await axios.get(API);
       this.items = res.data;
@@ -306,8 +325,16 @@ export default {
       return '';
     },
     clearDates() {
-      this.dateFrom = ''; this.dateTo = '';
-      this.selectedPeriod = ''; this.selectedMaterial = '';
+      this.dateFrom = '';
+      this.dateTo = '';
+      this.selectedPeriod = '';
+      this.selectedMaterial = '';
+    },
+    clearWithdrawalDates() {
+      this.wDateFrom = '';
+      this.wDateTo = '';
+      this.wSelectedPeriod = '';
+      this.wSelectedMaterial = '';
     },
     formatDate(d) {
       if (!d) return '';
@@ -315,65 +342,71 @@ export default {
     },
     applyPeriod() {
       const now = new Date();
+      const today = this.getTodayStr();
       if (this.selectedPeriod === 'today') {
-        const today = now.toISOString().split('T')[0];
-        this.dateFrom = today; this.dateTo = today;
+        this.dateFrom = today;
+        this.dateTo = today;
       } else if (this.selectedPeriod === 'week') {
         const first = new Date(now);
         first.setDate(now.getDate() - now.getDay());
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = now.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(first);
+        this.dateTo = today;
       } else if (this.selectedPeriod === 'lastweek') {
         const first = new Date(now);
         first.setDate(now.getDate() - now.getDay() - 7);
         const last = new Date(first);
         last.setDate(first.getDate() + 6);
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = last.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(first);
+        this.dateTo = this.toLocalDate(last);
       } else if (this.selectedPeriod === 'month') {
-        this.dateFrom = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-        this.dateTo = now.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(new Date(now.getFullYear(), now.getMonth(), 1));
+        this.dateTo = today;
       } else if (this.selectedPeriod === 'lastmonth') {
         const first = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const last = new Date(now.getFullYear(), now.getMonth(), 0);
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = last.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(first);
+        this.dateTo = this.toLocalDate(last);
       } else if (this.selectedPeriod === 'last3months') {
         const first = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = now.toISOString().split('T')[0];
-      } else { this.clearDates(); }
+        this.dateFrom = this.toLocalDate(first);
+        this.dateTo = today;
+      } else {
+        this.clearDates();
+      }
     },
     applyWithdrawalPeriod() {
       const now = new Date();
+      const today = this.getTodayStr();
       if (this.wSelectedPeriod === 'today') {
-        const today = now.toISOString().split('T')[0];
-        this.wDateFrom = today; this.wDateTo = today;
+        this.wDateFrom = today;
+        this.wDateTo = today;
       } else if (this.wSelectedPeriod === 'week') {
         const first = new Date(now);
         first.setDate(now.getDate() - now.getDay());
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = now.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(first);
+        this.wDateTo = today;
       } else if (this.wSelectedPeriod === 'lastweek') {
         const first = new Date(now);
         first.setDate(now.getDate() - now.getDay() - 7);
         const last = new Date(first);
         last.setDate(first.getDate() + 6);
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = last.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(first);
+        this.wDateTo = this.toLocalDate(last);
       } else if (this.wSelectedPeriod === 'month') {
-        this.wDateFrom = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-        this.wDateTo = now.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(new Date(now.getFullYear(), now.getMonth(), 1));
+        this.wDateTo = today;
       } else if (this.wSelectedPeriod === 'lastmonth') {
         const first = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const last = new Date(now.getFullYear(), now.getMonth(), 0);
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = last.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(first);
+        this.wDateTo = this.toLocalDate(last);
       } else if (this.wSelectedPeriod === 'last3months') {
         const first = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = now.toISOString().split('T')[0];
-      } else { this.wDateFrom = ''; this.wDateTo = ''; this.wSelectedPeriod = ''; }
+        this.wDateFrom = this.toLocalDate(first);
+        this.wDateTo = today;
+      } else {
+        this.clearWithdrawalDates();
+      }
     },
     printReport() {
       const rows = this.filteredItems.map((item, i) => `
@@ -390,44 +423,46 @@ export default {
       this.openPrintWindow(
         '📦 Summary of Material Log Monitoring Sheet',
         this.printDateLabel,
-        `<th>#</th><th>Project / Location</th><th>Materials</th><th>Unit</th>
+        `<th>#</th><th>Project Location</th><th>Materials</th><th>Unit</th>
          <th>Quantity</th><th>Withdraw</th><th>Remaining</th><th>Remarks</th>`,
         rows
       );
     },
-   
-      printWithdrawalReport() {
-  const rows = this.filteredWithdrawals.map((w, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${w.item_project || ''}</td>
-      <td>${w.material || ''}</td>
-      <td>${w.unit || ''}</td>
-      <td>${w.quantity_used}</td>
-      <td>${w.project_location || ''}</td>
-      <td>${this.formatDate(w.withdraw_date)}</td>
-      <td>${w.remarks || ''}</td>
-    </tr>`).join('');
-  this.openPrintWindow(
-    '📋 Withdrawal Log Monitoring Sheet',
-    this.withdrawalDateLabel,
-    `<th>#</th><th>Project/Location (Stock)</th><th>Material</th><th>Unit</th>
-     <th>Qty Used</th><th>Withdrawn To</th><th>Date</th><th>Remarks</th>`,
-    rows
-  );
-},
+    printWithdrawalReport() {
+      const rows = this.filteredWithdrawals.map((w, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${w.item_project || ''}</td>
+          <td>${w.material || ''}</td>
+          <td>${w.unit || ''}</td>
+          <td>${w.quantity_used}</td>
+          <td>${w.project_location || ''}</td>
+          <td>${this.formatDate(w.withdraw_date)}</td>
+          <td>${w.remarks || ''}</td>
+        </tr>`).join('');
+      this.openPrintWindow(
+        '📋 Withdrawal Log Monitoring Sheet',
+        this.withdrawalDateLabel,
+        `<th>#</th><th>Project Location</th><th>Material</th><th>Unit</th>
+         <th>Qty Used</th><th>ORIGIN.PROJECT LOCATION</th><th>Date</th><th>Remarks</th>`,
+        rows
+      );
+    },
     openPrintWindow(title, dateLabel, headers, rows) {
       const html = `<!DOCTYPE html><html><head><title>${title}</title>
         <style>
-          body { font-family: Arial, sans-serif; padding: 20px; font-size: 12px; }
-          h2 { text-align: center; margin-bottom: 4px; }
-          p { text-align: center; margin: 2px 0 16px; color: #555; }
-          table { width: 100%; border-collapse: collapse; }
-          th { background: #2c3e50; color: white; padding: 8px; text-align: left; }
-          td { padding: 6px 8px; border: 1px solid #ccc; }
-          tr:nth-child(even) { background: #f9f9f9; }
-          .footer { margin-top: 30px; font-size: 11px; color: #888; text-align: right; }
-        </style></head><body>
+  body { font-family: Arial, sans-serif; padding: 20px; font-size: 12px; }
+  h2 { text-align: center; margin-bottom: 4px; }
+  p { text-align: center; margin: 2px 0 16px; color: #555; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #2c3e50; color: white; padding: 8px; text-align: left; font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  td { padding: 6px 8px; border: 1px solid #ccc; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  .footer { margin-top: 30px; font-size: 11px; color: #888; text-align: right; }
+  @media print {
+    th { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #2c3e50 !important; color: white !important; }
+  }
+</style></head><body>
         <h2>${title}</h2>
         <p>${dateLabel}</p>
         <table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>
@@ -466,7 +501,7 @@ input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; width: 10
 .material-select { padding: 7px 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; min-width: 160px; }
 .table-wrapper { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th { background: #2c3e50; color: white; padding: 10px 8px; text-align: left; }
+th { background: #2c3e50; color: white; padding: 8px; text-align: left; font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 td { padding: 8px; border-bottom: 1px solid #eee; }
 tr:hover { background: #f5f5f5; }
 .row-empty { background: #ffcccc !important; }
@@ -476,7 +511,7 @@ tr:hover { background: #f5f5f5; }
 button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
 .btn-add { background: #28a745; color: white; }
 .btn-edit { background: #ffc107; color: black; }
-.btn-cancel { background: #6c757d; color: white; }
+.btn-cancel { background: #28a745; color: white; }
 .btn-withdraw { background: #17a2b8; color: white; }
 .btn-edit-sm { background: #ffc107; color: black; }
 .btn-delete { background: #dc3545; color: white; }
