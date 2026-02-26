@@ -205,7 +205,7 @@
 
 <script>
 import axios from 'axios';
-const API = 'http://localhost:3000/api/items';
+const API = 'https://inventory-backend-two-sable.vercel.app';
 
 export default {
   data() {

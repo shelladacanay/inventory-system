@@ -5,17 +5,17 @@ const db = require('../db');
 // GET all items
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM items ORDER BY created_at DESC');
+    const { rows } = await db.query('SELECT * FROM items ORDER BY created_at DESC');
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// ⚠️ GET withdrawal history — MUST be before /:id routes
+// GET withdrawal history
 router.get('/withdrawals/all', async (req, res) => {
   try {
-    const [rows] = await db.query(`
+    const { rows } = await db.query(`
       SELECT w.*, i.material, i.unit, i.project AS item_project
       FROM withdrawals w
       JOIN items i ON w.item_id = i.id
@@ -31,11 +31,11 @@ router.get('/withdrawals/all', async (req, res) => {
 router.post('/', async (req, res) => {
   const { project, material, unit, quantity, withdraw_qty, remarks } = req.body;
   try {
-    const [result] = await db.query(
-      'INSERT INTO items (project, material, unit, quantity, withdraw_qty, remarks) VALUES (?, ?, ?, ?, ?, ?)',
+    const { rows } = await db.query(
+      'INSERT INTO items (project, material, unit, quantity, withdraw_qty, remarks) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
       [project, material, unit, quantity, withdraw_qty || 0, remarks]
     );
-    res.json({ id: result.insertId, message: 'Item added successfully' });
+    res.json({ id: rows[0].id, message: 'Item added successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -46,7 +46,7 @@ router.put('/:id', async (req, res) => {
   const { project, material, unit, quantity, withdraw_qty, remarks } = req.body;
   try {
     await db.query(
-      'UPDATE items SET project=?, material=?, unit=?, quantity=?, withdraw_qty=?, remarks=? WHERE id=?',
+      'UPDATE items SET project=$1, material=$2, unit=$3, quantity=$4, withdraw_qty=$5, remarks=$6 WHERE id=$7',
       [project, material, unit, quantity, withdraw_qty, remarks, req.params.id]
     );
     res.json({ message: 'Item updated successfully' });
@@ -55,16 +55,16 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// WITHDRAW with project location
+// WITHDRAW
 router.patch('/:id/withdraw', async (req, res) => {
   const { amount, project_location, remarks } = req.body;
   try {
     await db.query(
-      'UPDATE items SET withdraw_qty = withdraw_qty + ? WHERE id = ?',
+      'UPDATE items SET withdraw_qty = withdraw_qty + $1 WHERE id = $2',
       [amount, req.params.id]
     );
     await db.query(
-      'INSERT INTO withdrawals (item_id, project_location, quantity_used, withdraw_date, remarks) VALUES (?, ?, ?, CURDATE(), ?)',
+      'INSERT INTO withdrawals (item_id, project_location, quantity_used, withdraw_date, remarks) VALUES ($1, $2, $3, NOW(), $4)',
       [req.params.id, project_location, amount, remarks || '']
     );
     res.json({ message: 'Withdrawal recorded' });
@@ -74,13 +74,10 @@ router.patch('/:id/withdraw', async (req, res) => {
 });
 
 // DELETE item
-// DELETE item
 router.delete('/:id', async (req, res) => {
   try {
-    // First delete related withdrawals
-    await db.query('DELETE FROM withdrawals WHERE item_id = ?', [req.params.id]);
-    // Then delete the item
-    await db.query('DELETE FROM items WHERE id = ?', [req.params.id]);
+    await db.query('DELETE FROM withdrawals WHERE item_id = $1', [req.params.id]);
+    await db.query('DELETE FROM items WHERE id = $1', [req.params.id]);
     res.json({ message: 'Item deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
