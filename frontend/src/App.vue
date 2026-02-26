@@ -11,18 +11,15 @@
         </div>
       </div>
 
-      <!-- DATE -->
       <p class="date-label">As of: {{ today }}</p>
 
       <!-- TABS -->
-      <div class="tabs">
-        <button @click="activeTab = 'inventory'" :class="activeTab === 'inventory' ? 'tab-active' : 'tab'">
-          📦 Inventory
-        </button>
-        <button @click="activeTab = 'withdrawals'" :class="activeTab === 'withdrawals' ? 'tab-active' : 'tab'">
-          📋 Withdrawal Log
-        </button>
-      </div>
+      <div class="main-layout">
+  <div class="sidebar">
+    <button @click="activeTab = 'inventory'" :class="activeTab === 'inventory' ? 'nav-active' : 'nav-item'">📦 Inventory</button>
+    <button @click="activeTab = 'withdrawals'" :class="activeTab === 'withdrawals' ? 'nav-active' : 'nav-item'">📋 Withdrawal Log</button>
+  </div>
+  <div class="main-content">
 
       <!-- ===================== INVENTORY TAB ===================== -->
       <div v-if="activeTab === 'inventory'">
@@ -30,7 +27,7 @@
           <h2 class="form-title">{{ editMode ? '✏️ Edit Item' : '➕ Add New Item' }}</h2>
           <div class="form-grid">
             <div class="form-field">
-              <label class="field-label">Project / Location :</label>
+              <label class="field-label">Project Location :</label>
               <input v-model="form.project" placeholder="Enter project or location" />
             </div>
             <div class="form-field">
@@ -62,7 +59,6 @@
           </div>
         </div>
 
-        <!-- TOOLBAR -->
         <div class="toolbar">
           <input v-model="search" placeholder="🔍 Search project or material..." class="search-input" />
           <div class="date-filter">
@@ -88,13 +84,12 @@
           <button @click="printReport" class="btn-print">🖨️ Print / Download</button>
         </div>
 
-        <!-- TABLE -->
         <div class="table-wrapper">
           <table>
             <thead>
               <tr>
                 <th>#</th>
-                <th>Project / Location</th>
+                <th> Origin Project Location</th>
                 <th>Materials</th>
                 <th>Unit</th>
                 <th>Quantity</th>
@@ -136,7 +131,7 @@
             <input type="date" v-model="wDateFrom" />
             <label>To:</label>
             <input type="date" v-model="wDateTo" />
-            <button @click="wDateFrom=''; wDateTo=''; wSelectedPeriod=''; wSelectedMaterial=''" class="btn-gray">Clear</button>
+            <button @click="clearWithdrawalDates" class="btn-gray">Clear</button>
           </div>
           <select v-model="wSelectedMaterial" class="select-input">
             <option value="">-- All Materials --</option>
@@ -159,11 +154,11 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Project / Location (Stock)</th>
+                <th> Origin Project Location</th>
                 <th>Material</th>
                 <th>Unit</th>
                 <th>Qty Used</th>
-                <th>Withdrawn To (Location)</th>
+                <th>Project Location</th>
                 <th>Date</th>
                 <th>Remarks</th>
               </tr>
@@ -204,6 +199,8 @@
 
     </div>
   </div>
+    </div>
+</div>
 </template>
 
 <script>
@@ -243,21 +240,15 @@ export default {
       const s = this.search.toLowerCase();
       if (s) result = result.filter(i => i.project?.toLowerCase().includes(s) || i.material?.toLowerCase().includes(s));
       if (this.selectedMaterial) result = result.filter(i => i.material === this.selectedMaterial);
-      if (this.dateFrom) result = result.filter(i => new Date(i.created_at) >= new Date(this.dateFrom));
-      if (this.dateTo) {
-        const to = new Date(this.dateTo); to.setHours(23, 59, 59);
-        result = result.filter(i => new Date(i.created_at) <= to);
-      }
+      if (this.dateFrom) result = result.filter(i => this.toLocalDate(i.created_at) >= this.dateFrom);
+      if (this.dateTo) result = result.filter(i => this.toLocalDate(i.created_at) <= this.dateTo);
       return result;
     },
     filteredWithdrawals() {
       let result = this.withdrawals;
       if (this.wSelectedMaterial) result = result.filter(w => w.material === this.wSelectedMaterial);
-      if (this.wDateFrom) result = result.filter(w => new Date(w.withdraw_date) >= new Date(this.wDateFrom));
-      if (this.wDateTo) {
-        const to = new Date(this.wDateTo); to.setHours(23, 59, 59);
-        result = result.filter(w => new Date(w.withdraw_date) <= to);
-      }
+      if (this.wDateFrom) result = result.filter(w => this.toLocalDate(w.withdraw_date) >= this.wDateFrom);
+      if (this.wDateTo) result = result.filter(w => this.toLocalDate(w.withdraw_date) <= this.wDateTo);
       return result;
     },
     uniqueMaterials() {
@@ -283,6 +274,21 @@ export default {
     }
   },
   methods: {
+    toLocalDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    },
+    getTodayStr() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    },
     async fetchItems() {
       try {
         const res = await axios.get(API);
@@ -310,7 +316,6 @@ export default {
         this.resetForm();
         this.fetchItems();
       } catch (e) {
-        console.error('Failed to save item:', e);
         alert('Failed to save item. Check if the backend is running.');
       }
     },
@@ -327,7 +332,6 @@ export default {
         await axios.delete(`${API}/${id}`);
         this.fetchItems();
       } catch (e) {
-        console.error('Failed to delete:', e);
         alert('Failed to delete item.');
       }
     },
@@ -352,7 +356,6 @@ export default {
         this.fetchItems();
         this.fetchWithdrawals();
       } catch (e) {
-        console.error('Withdrawal failed:', e);
         alert('Withdrawal failed. Check backend.');
       }
     },
@@ -362,13 +365,16 @@ export default {
       this.editId = null;
     },
     rowClass(item) {
-      // Green = has remaining stock, Red = no remaining (fully used)
-      if (item.remaining === 0) return 'row-empty';   // red - fully used
-      return 'row-has-stock';                          // green - has remaining
+      if (item.remaining === 0) return 'row-empty';
+      return 'row-has-stock';
     },
     clearDates() {
       this.dateFrom = ''; this.dateTo = '';
       this.selectedPeriod = ''; this.selectedMaterial = '';
+    },
+    clearWithdrawalDates() {
+      this.wDateFrom = ''; this.wDateTo = '';
+      this.wSelectedPeriod = ''; this.wSelectedMaterial = '';
     },
     formatDate(d) {
       if (!d) return '';
@@ -376,59 +382,51 @@ export default {
     },
     applyPeriod() {
       const now = new Date();
+      const today = this.getTodayStr();
       if (this.selectedPeriod === 'today') {
-        const today = now.toISOString().split('T')[0];
         this.dateFrom = today; this.dateTo = today;
       } else if (this.selectedPeriod === 'week') {
         const first = new Date(now); first.setDate(now.getDate() - now.getDay());
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = now.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(first); this.dateTo = today;
       } else if (this.selectedPeriod === 'lastweek') {
         const first = new Date(now); first.setDate(now.getDate() - now.getDay() - 7);
         const last = new Date(first); last.setDate(first.getDate() + 6);
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = last.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(first); this.dateTo = this.toLocalDate(last);
       } else if (this.selectedPeriod === 'month') {
-        this.dateFrom = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-        this.dateTo = now.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(new Date(now.getFullYear(), now.getMonth(), 1));
+        this.dateTo = today;
       } else if (this.selectedPeriod === 'lastmonth') {
         const first = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const last = new Date(now.getFullYear(), now.getMonth(), 0);
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = last.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(first); this.dateTo = this.toLocalDate(last);
       } else if (this.selectedPeriod === 'last3months') {
         const first = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-        this.dateFrom = first.toISOString().split('T')[0];
-        this.dateTo = now.toISOString().split('T')[0];
+        this.dateFrom = this.toLocalDate(first); this.dateTo = today;
       } else { this.clearDates(); }
     },
     applyWithdrawalPeriod() {
       const now = new Date();
+      const today = this.getTodayStr();
       if (this.wSelectedPeriod === 'today') {
-        const today = now.toISOString().split('T')[0];
         this.wDateFrom = today; this.wDateTo = today;
       } else if (this.wSelectedPeriod === 'week') {
         const first = new Date(now); first.setDate(now.getDate() - now.getDay());
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = now.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(first); this.wDateTo = today;
       } else if (this.wSelectedPeriod === 'lastweek') {
         const first = new Date(now); first.setDate(now.getDate() - now.getDay() - 7);
         const last = new Date(first); last.setDate(first.getDate() + 6);
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = last.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(first); this.wDateTo = this.toLocalDate(last);
       } else if (this.wSelectedPeriod === 'month') {
-        this.wDateFrom = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-        this.wDateTo = now.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(new Date(now.getFullYear(), now.getMonth(), 1));
+        this.wDateTo = today;
       } else if (this.wSelectedPeriod === 'lastmonth') {
         const first = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const last = new Date(now.getFullYear(), now.getMonth(), 0);
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = last.toISOString().split('T')[0];
+        this.wDateFrom = this.toLocalDate(first); this.wDateTo = this.toLocalDate(last);
       } else if (this.wSelectedPeriod === 'last3months') {
         const first = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-        this.wDateFrom = first.toISOString().split('T')[0];
-        this.wDateTo = now.toISOString().split('T')[0];
-      } else { this.wDateFrom = ''; this.wDateTo = ''; this.wSelectedPeriod = ''; }
+        this.wDateFrom = this.toLocalDate(first); this.wDateTo = today;
+      } else { this.clearWithdrawalDates(); }
     },
     printReport() {
       const rows = this.filteredItems.map((item, i) => `
@@ -439,7 +437,7 @@ export default {
         </tr>`).join('');
       this.openPrintWindow(
         'Summary of Material Log Monitoring Sheet', this.printDateLabel,
-        `<th>#</th><th>Project / Location</th><th>Materials</th><th>Unit</th>
+        `<th>#</th><th>Project Location</th><th>Materials</th><th>Unit</th>
          <th>Quantity</th><th>Withdraw</th><th>Remaining</th><th>Remarks</th>`, rows
       );
     },
@@ -452,8 +450,8 @@ export default {
         </tr>`).join('');
       this.openPrintWindow(
         'Withdrawal Log Monitoring Sheet', this.withdrawalDateLabel,
-        `<th>#</th><th>Project/Location (Stock)</th><th>Material</th><th>Unit</th>
-         <th>Qty Used</th><th>Withdrawn To</th><th>Date</th><th>Remarks</th>`, rows
+        `<th>#</th><th>Project Location</th><th>Material</th><th>Unit</th>
+         <th>Qty Used</th><th>Origin Project Location</th><th>Date</th><th>Remarks</th>`, rows
       );
     },
     openPrintWindow(title, dateLabel, headers, rows) {
@@ -464,10 +462,13 @@ export default {
           h2 { text-align: center; color: #004d26; font-family: 'Merriweather', serif; margin-bottom: 4px; }
           p { text-align: center; margin: 2px 0 16px; color: #555; }
           table { width: 100%; border-collapse: collapse; }
-          th { background: #004d26; color: white; padding: 8px; text-align: left; }
+          th { background: #004d26; color: white; padding: 8px; text-align: left; font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           td { padding: 6px 8px; border: 1px solid #ccc; }
           tr:nth-child(even) { background: #f0faf0; }
           .footer { margin-top: 30px; font-size: 11px; color: #888; text-align: right; }
+          @media print {
+            th { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #004d26 !important; color: white !important; }
+          }
         </style></head><body>
         <h2>${title}</h2>
         <p>${dateLabel}</p>
@@ -498,7 +499,6 @@ export default {
   background: linear-gradient(135deg, #004d26 0%, #0f9d58 60%, #1db954 100%);
   padding: 60px 50px;
   font-family: 'Source Sans 3', Arial, sans-serif;
-  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.25), inset 0 0 60px rgba(0, 77, 38, 0.4);
 }
 
 .container {
@@ -507,354 +507,140 @@ export default {
   background: #ffffff;
   border-radius: 18px;
   padding: 36px;
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.35),
-    0 8px 32px rgba(0, 77, 38, 0.3),
-    0 0 0 1px rgba(15, 157, 88, 0.15);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.35), 0 8px 32px rgba(0,77,38,0.3);
 }
 
-/* HEADER */
 .header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
-  padding: 24px 20px 22px;
-  border-bottom: 3px solid #0f9d58;
-  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  margin-bottom: 6px; padding: 24px 20px 22px;
+  border-bottom: 3px solid #0f9d58; text-align: center;
   border-radius: 10px 10px 0 0;
-  /* Green glow shadow */
-  box-shadow: 0 4px 32px rgba(15, 157, 88, 0.18), 0 1px 8px rgba(0, 77, 38, 0.10);
   background: linear-gradient(180deg, rgba(240,250,244,0.7) 0%, rgba(255,255,255,0) 100%);
-  opacity: 0;
-  transform: translateY(-18px);
+  opacity: 0; transform: translateY(-18px);
   transition: opacity 0.0s, transform 0.0s;
 }
+.header-visible { opacity: 1 !important; transform: translateY(0) !important; transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1) !important; }
 
-.header-visible {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1) !important;
-}
+.logo { width: 90px; height: auto; opacity: 0; transform: scale(0.7) rotate(-8deg); transition: opacity 0.0s, transform 0.0s; filter: drop-shadow(0 4px 16px rgba(15,157,88,0.35)); }
+.logo-visible { opacity: 1 !important; transform: scale(1) rotate(0deg) !important; transition: opacity 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s, transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s !important; }
 
-.logo {
-  width: 90px;
-  height: auto;
-  object-fit: contain;
-  opacity: 0;
-  transform: scale(0.7) rotate(-8deg);
-  transition: opacity 0.0s, transform 0.0s;
-  filter: drop-shadow(0 4px 16px rgba(15, 157, 88, 0.35));
-}
+.header-text h1 { font-family: 'Merriweather', serif; font-size: 27px; font-weight: 700; color: #004d26; margin: 0 0 5px 0; opacity: 0; transform: translateY(12px); transition: opacity 0.0s, transform 0.0s; }
+.title-visible { opacity: 1 !important; transform: translateY(0) !important; transition: opacity 0.7s ease 0.35s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.35s !important; }
 
-.logo-visible {
-  opacity: 1 !important;
-  transform: scale(1) rotate(0deg) !important;
-  transition: opacity 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s, transform 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s !important;
-}
+.header-text p { margin: 0; color: #555; font-size: 14px; font-weight: 600; opacity: 0; transform: translateY(8px); transition: opacity 0.0s, transform 0.0s; }
+.subtitle-visible { opacity: 1 !important; transform: translateY(0) !important; transition: opacity 0.7s ease 0.52s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.52s !important; }
 
-.header-text h1 {
-  font-family: 'Merriweather', serif;
-  font-size: 27px;
-  font-weight: 700;
-  color: #004d26;
-  margin: 0 0 5px 0;
-  line-height: 1.35;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.0s, transform 0.0s;
-  text-shadow: 0 2px 12px rgba(15, 157, 88, 0.15);
-}
+.date-label { font-size: 13px; color: #777; font-weight: 600; margin: 10px 0 18px; }
 
-.title-visible {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  transition: opacity 0.7s ease 0.35s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.35s !important;
-}
-
-.header-text p {
-  margin: 0;
-  color: #555;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.0s, transform 0.0s;
-}
-
-.subtitle-visible {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  transition: opacity 0.7s ease 0.52s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.52s !important;
-}
-
-.date-label {
-  font-size: 13px;
-  color: #777;
-  font-weight: 600;
-  margin: 10px 0 18px;
-}
-
-/* TABS */
-.tabs {
+.main-layout {
   display: flex;
-  gap: 6px;
-  margin-bottom: 22px;
+  gap: 20px;
+  align-items: flex-start;
 }
 
-.tab {
-  padding: 10px 22px;
-  background: #e8f5e9;
-  border: 2px solid #c8e6c9;
-  border-radius: 8px 8px 0 0;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  color: #004d26;
-  transition: all 0.2s ease;
-}
-
-.tab:hover { background: #c8e6c9; }
-
-.tab-active {
-  padding: 10px 22px;
-  background: #004d26;
-  border: 2px solid #004d26;
-  border-radius: 8px 8px 0 0;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  color: white;
-  transition: all 0.2s ease;
-}
-
-/* FORM BOX */
-.form-box {
-  background: linear-gradient(135deg, #f0faf4, #e8f5e9);
-  padding: 22px;
-  border-radius: 10px;
-  margin-bottom: 22px;
-  border: 1px solid #c8e6c9;
-}
-
-.form-title {
-  font-family: 'Merriweather', serif;
-  color: #004d26;
-  font-size: 16px;
-  margin: 0 0 16px 0;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.form-field {
+.sidebar {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  min-width: 180px;
+  background: linear-gradient(180deg, #004d26, #0f9d58);
+  border-radius: 12px;
+  padding: 16px 12px;
+  box-shadow: 0 4px 20px rgba(0,77,38,0.3);
+  position: sticky;
+  top: 20px;
 }
 
-.field-label {
-  font-size: 12px;
+.nav-item {
+  padding: 12px 16px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border-color: rgba(255,255,255,0.4);
+}
+
+.nav-active {
+  padding: 12px 16px;
+  background: white;
+  border: 2px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
   font-weight: 700;
   color: #004d26;
-  letter-spacing: 0.2px;
-}
-
-input, select {
-  padding: 9px 12px;
-  border: 1.5px solid #a5d6a7;
-  border-radius: 6px;
-  font-size: 13px;
-  width: 100%;
-  font-family: 'Source Sans 3', Arial, sans-serif;
-  transition: border-color 0.2s;
-  background: white;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: #0f9d58;
-  box-shadow: 0 0 0 3px rgba(15, 157, 88, 0.12);
-}
-
-.form-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* TOOLBAR */
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 14px 16px;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-.search-input {
-  min-width: 240px;
-}
-
-.date-filter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.date-filter label {
-  font-weight: 600;
-  font-size: 13px;
-  color: #004d26;
-}
-
-.date-filter input {
-  width: auto;
-  padding: 7px 10px;
-}
-
-.select-input {
-  min-width: 160px;
-  padding: 8px 10px;
-}
-
-/* TABLE */
-.table-wrapper {
-  overflow-x: auto;
-  border-radius: 8px;
-  border: 2px solid #333;
-  background: #faf6f0;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-th {
-  background: #004d26;
-  color: white;
-  padding: 11px 10px;
   text-align: left;
-  font-family: 'Merriweather', serif;
-  font-size: 12px;
-  letter-spacing: 0.3px;
-  border: 1px solid #003320;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-td {
-  padding: 9px 10px;
-  border: 1px solid #555;
-  color: #333;
-  background: #faf6f0;
+.main-content {
+  flex: 1;
+  min-width: 0;
 }
 
+.form-box { background: linear-gradient(135deg, #f0faf4, #e8f5e9); padding: 22px; border-radius: 10px; margin-bottom: 22px; border: 1px solid #c8e6c9; }
+.form-title { font-family: 'Merriweather', serif; color: #004d26; font-size: 16px; margin: 0 0 16px 0; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.form-field { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 12px; font-weight: 700; color: #004d26; letter-spacing: 0.2px; }
+
+input, select { padding: 9px 12px; border: 1.5px solid #a5d6a7; border-radius: 6px; font-size: 13px; width: 100%; font-family: 'Source Sans 3', Arial, sans-serif; transition: border-color 0.2s; background: white; }
+input:focus, select:focus { outline: none; border-color: #0f9d58; box-shadow: 0 0 0 3px rgba(15,157,88,0.12); }
+
+.form-actions { display: flex; gap: 10px; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; padding: 14px 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e0e0e0; }
+.search-input { min-width: 240px; }
+.date-filter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.date-filter label { font-weight: 600; font-size: 13px; color: #004d26; }
+.date-filter input { width: auto; padding: 7px 10px; }
+.select-input { min-width: 160px; padding: 8px 10px; }
+
+.table-wrapper { overflow-x: auto; border-radius: 8px; border: 2px solid #333; background: #faf6f0; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: #004d26; color: white; padding: 11px 10px; text-align: left; font-family: 'Merriweather', serif; font-size: 12px; letter-spacing: 0.3px; border: 1px solid #003320; }
+td { padding: 9px 10px; border: 1px solid #555; color: #333; background: #faf6f0; }
 tr:hover td { background: #f0ece4; }
-
-.row-empty td { background: #f8d7da !important; border-color: #555 !important; }
+.row-empty td { 
+  background: #e04f4c !important; 
+  color: #000 !important;   /* make text black */
+  border-color: #b71c1c !important; 
+}
 .row-has-stock td { background: #d4edda !important; border-color: #555 !important; }
+.empty-row { text-align: center; padding: 28px !important; color: #888; font-style: italic; }
+.remarks-cell { font-size: 11px; color: #666; max-width: 180px; }
+.actions-cell { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
 
-.empty-row {
-  text-align: center;
-  padding: 28px !important;
-  color: #888;
-  font-style: italic;
-}
-
-.remarks-cell {
-  font-size: 11px;
-  color: #666;
-  max-width: 180px;
-}
-
-.actions-cell {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-}
-
-/* BUTTONS */
-button {
-  padding: 7px 13px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: 'Source Sans 3', Arial, sans-serif;
-  transition: opacity 0.15s, transform 0.1s;
-}
-
+button { padding: 7px 13px; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Source Sans 3', Arial, sans-serif; transition: opacity 0.15s, transform 0.1s; }
 button:hover { opacity: 0.88; transform: translateY(-1px); }
 button:active { transform: translateY(0); }
 
 .btn-primary { background: #0f9d58; color: white; }
 .btn-warning { background: #f9a825; color: #1a1a1a; }
 .btn-warning-sm { background: #f9a825; color: #1a1a1a; }
-.btn-gray { background: #78909c; color: white; }
-.btn-info { background: #039be5; color: white; }
-.btn-danger { background: #e53935; color: white; }
-.btn-print {
-  background: #4a148c;
-  color: white;
-  padding: 8px 16px;
-  font-size: 13px;
-}
+.btn-gray { background: #28a745; color: white; }
+.btn-info { background: #039be5; color: white; min-width: 90px; text-align: center; }
+.btn-warning-sm { background: #f9a825; color: #1a1a1a; min-width: 90px; text-align: center; }
+.btn-danger { background: #e53935; color: white; min-width: 90px; text-align: center; }
+.btn-print { background: #4a148c; color: white; padding: 8px 16px; font-size: 13px; }
 
-/* MODAL */
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  backdrop-filter: blur(2px);
-}
-
-.modal {
-  background: white;
-  padding: 32px;
-  border-radius: 12px;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  border-top: 5px solid #0f9d58;
-}
-
-.modal-title {
-  font-family: 'Merriweather', serif;
-  color: #004d26;
-  font-size: 17px;
-  margin: 0 0 8px 0;
-}
-
-.modal-available {
-  color: #555;
-  margin: 0 0 14px 0;
-  font-size: 13px;
-}
-
-.modal input {
-  margin: 7px 0;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 18px;
-}
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 999; backdrop-filter: blur(2px); }
+.modal { background: white; padding: 32px; border-radius: 12px; width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 5px solid #0f9d58; }
+.modal-title { font-family: 'Merriweather', serif; color: #004d26; font-size: 17px; margin: 0 0 8px 0; }
+.modal-available { color: #555; margin: 0 0 14px 0; font-size: 13px; }
+.modal input { margin: 7px 0; }
+.modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
 </style>
