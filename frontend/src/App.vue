@@ -434,9 +434,80 @@
               <div class="table-wrapper">
                 <table>
                   <thead><tr>
-                    <th>#</th><th>Date</th><th>Control #</th><th>Material</th><th>Unit</th>
-                    <th>In-charge</th><th>Origin Project Location</th><th>Qty</th>
-                    <th>Project Location</th><th>Remarks</th><th>Actions</th>
+                    <th>#</th>
+                    <th style="position:relative">Date
+                      <button @click.stop="showManualDateSort = !showManualDateSort" class="column-filter-btn" :class="{ 'filter-active': manualDateSort }">⚙</button>
+                      <div v-if="showManualDateSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualDateSort=''; showManualDateSort=false" :class="{ 'option-active': !manualDateSort }">No Filter</div>
+                        <div class="filter-option" @click="manualDateSort='date-asc'; showManualDateSort=false" :class="{ 'option-active': manualDateSort==='date-asc' }">Oldest First</div>
+                        <div class="filter-option" @click="manualDateSort='date-desc'; showManualDateSort=false" :class="{ 'option-active': manualDateSort==='date-desc' }">Newest First</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Control #
+                      <button @click.stop="showManualControlSort = !showManualControlSort" class="column-filter-btn" :class="{ 'filter-active': manualControlSort }">⚙</button>
+                      <div v-if="showManualControlSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualControlSort=''; showManualControlSort=false" :class="{ 'option-active': !manualControlSort }">No Filter</div>
+                        <div class="filter-option" @click="manualControlSort='alpha-asc'; showManualControlSort=false" :class="{ 'option-active': manualControlSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualControlSort='alpha-desc'; showManualControlSort=false" :class="{ 'option-active': manualControlSort==='alpha-desc' }">Z-A</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Material
+                      <button @click.stop="showManualMaterialSort = !showManualMaterialSort" class="column-filter-btn" :class="{ 'filter-active': manualMaterialSort }">⚙</button>
+                      <div v-if="showManualMaterialSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualMaterialSort=''; showManualMaterialSort=false" :class="{ 'option-active': !manualMaterialSort }">No Filter</div>
+                        <div class="filter-option" @click="manualMaterialSort='alpha-asc'; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualMaterialSort='alpha-desc'; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='alpha-desc' }">Z-A</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Unit
+                      <button @click.stop="showManualUnitSort = !showManualUnitSort" class="column-filter-btn" :class="{ 'filter-active': manualUnitSort }">⚙</button>
+                      <div v-if="showManualUnitSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualUnitSort=''; showManualUnitSort=false" :class="{ 'option-active': !manualUnitSort }">No Filter</div>
+                        <div class="filter-option" @click="manualUnitSort='alpha-asc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualUnitSort='alpha-desc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-desc' }">Z-A</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">In-charge
+                      <button @click.stop="showManualInchargeSort = !showManualInchargeSort" class="column-filter-btn" :class="{ 'filter-active': manualInchargeSort }">⚙</button>
+                      <div v-if="showManualInchargeSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualInchargeSort=''; showManualInchargeSort=false" :class="{ 'option-active': !manualInchargeSort }">No Filter</div>
+                        <div class="filter-option" @click="manualInchargeSort='alpha-asc'; showManualInchargeSort=false" :class="{ 'option-active': manualInchargeSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualInchargeSort='alpha-desc'; showManualInchargeSort=false" :class="{ 'option-active': manualInchargeSort==='alpha-desc' }">Z-A</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Origin Project Location
+                      <button @click.stop="showManualOriginSort = !showManualOriginSort" class="column-filter-btn" :class="{ 'filter-active': manualOriginSort }">⚙</button>
+                      <div v-if="showManualOriginSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualOriginSort=''; showManualOriginSort=false" :class="{ 'option-active': !manualOriginSort }">No Filter</div>
+                        <div class="filter-option" @click="manualOriginSort='alpha-asc'; showManualOriginSort=false" :class="{ 'option-active': manualOriginSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualOriginSort='alpha-desc'; showManualOriginSort=false" :class="{ 'option-active': manualOriginSort==='alpha-desc' }">Z-A</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Qty
+                      <button @click.stop="showManualQtySort = !showManualQtySort" class="column-filter-btn" :class="{ 'filter-active': manualQtySort }">⚙</button>
+                      <div v-if="showManualQtySort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualQtySort=''; showManualQtySort=false" :class="{ 'option-active': !manualQtySort }">No Filter</div>
+                        <div class="filter-option" @click="manualQtySort='num-asc'; showManualQtySort=false" :class="{ 'option-active': manualQtySort==='num-asc' }">Low to High</div>
+                        <div class="filter-option" @click="manualQtySort='num-desc'; showManualQtySort=false" :class="{ 'option-active': manualQtySort==='num-desc' }">High to Low</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Project Location
+                      <button @click.stop="showManualLocationSort = !showManualLocationSort" class="column-filter-btn" :class="{ 'filter-active': manualLocationSort }">⚙</button>
+                      <div v-if="showManualLocationSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualLocationSort=''; showManualLocationSort=false" :class="{ 'option-active': !manualLocationSort }">No Filter</div>
+                        <div class="filter-option" @click="manualLocationSort='alpha-asc'; showManualLocationSort=false" :class="{ 'option-active': manualLocationSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualLocationSort='alpha-desc'; showManualLocationSort=false" :class="{ 'option-active': manualLocationSort==='alpha-desc' }">Z-A</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Remarks
+                      <button @click.stop="showManualRemarksSort = !showManualRemarksSort" class="column-filter-btn" :class="{ 'filter-active': manualRemarksSort }">⚙</button>
+                      <div v-if="showManualRemarksSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualRemarksSort=''; showManualRemarksSort=false" :class="{ 'option-active': !manualRemarksSort }">No Filter</div>
+                        <div class="filter-option" @click="manualRemarksSort='alpha-asc'; showManualRemarksSort=false" :class="{ 'option-active': manualRemarksSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualRemarksSort='alpha-desc'; showManualRemarksSort=false" :class="{ 'option-active': manualRemarksSort==='alpha-desc' }">Z-A</div>
+                      </div>
+                    </th>
+                    <th>Actions</th>
                   </tr></thead>
                   <tbody>
                     <tr v-for="(log,index) in filteredManualLogs" :key="log.id">
@@ -727,7 +798,7 @@
 
             <!-- PO DETAIL MODAL -->
             <div v-if="viewPOModal" class="modal-overlay" @click.self="viewPOModal=false">
-              <div class="modal modal-animate po-detail-modal" style="position:fixed;top:24px;left:50%;transform:translateX(-50%);">
+             <div class="modal modal-animate po-detail-modal" ref="poDetailModal">
                 <div class="modal-accent-bar"></div>
                 <div class="po-detail-header">
                   <h3 class="modal-title">Purchase Order Details</h3>
@@ -1034,6 +1105,15 @@ export default {
       manualForm:{ log_date:'', control_no:'', material:'', unit:'', incharge:'', origin_project:'', qty:0, project_location:'', remarks:'' },
       manualSaving:false, manualEditMode:false, manualEditId:null,
       showManualMaterialSug:false, showManualInchargeSug:false, showManualOriginSug:false, showManualLocationSug:false,
+      manualDateSort:'', showManualDateSort:false,
+      manualControlSort:'', showManualControlSort:false,
+      manualMaterialSort:'', showManualMaterialSort:false,
+      manualUnitSort:'', showManualUnitSort:false,
+      manualInchargeSort:'', showManualInchargeSort:false,
+      manualOriginSort:'', showManualOriginSort:false,
+      manualQtySort:'', showManualQtySort:false,
+      manualLocationSort:'', showManualLocationSort:false,
+      manualRemarksSort:'', showManualRemarksSort:false,
       form:{ project:'', material:'', unit:'', quantity:0, withdraw_qty:0, remarks:'' },
       editMode:false, editId:null,
       showProjectSug:false, showMaterialSug:false,
@@ -1049,7 +1129,7 @@ export default {
       // PO
       pos:[], poSearch:'',
       showPOForm:false, poEditMode:false, poEditId:null,
-      viewPOModal:false, selectedPO:{}, poModalTop:24,
+      viewPOModal:false, selectedPO:{},
       poListSourceSort:'', showPoSourceSort:false,
       poListWorkDescSort:'', showPoWorkDescSort:false,
       poListSupplierSort:'', showPoSupplierSort:false,
@@ -1161,6 +1241,29 @@ export default {
       if(this.manualSearch){ const s=this.manualSearch.toLowerCase(); r=r.filter(l=>(l.material||'').toLowerCase().includes(s)||(l.origin_project||'').toLowerCase().includes(s)||(l.project_location||'').toLowerCase().includes(s)||(l.incharge||'').toLowerCase().includes(s)||(l.control_no||'').toLowerCase().includes(s)); }
       if(this.manualDateFrom) r=r.filter(l=>l.log_date>=this.manualDateFrom);
       if(this.manualDateTo) r=r.filter(l=>l.log_date<=this.manualDateTo);
+      const applySort = (arr, sort, field, sortType='alpha') => {
+        if (!sort) return arr;
+        if (sortType === 'date') {
+          if (sort === 'date-asc') return [...arr].sort((a,b) => new Date(a[field]||0) - new Date(b[field]||0));
+          if (sort === 'date-desc') return [...arr].sort((a,b) => new Date(b[field]||0) - new Date(a[field]||0));
+        } else if (sortType === 'num') {
+          if (sort === 'num-asc') return [...arr].sort((a,b) => (a[field]||0) - (b[field]||0));
+          if (sort === 'num-desc') return [...arr].sort((a,b) => (b[field]||0) - (a[field]||0));
+        } else {
+          if (sort === 'alpha-asc') return [...arr].sort((a,b) => (a[field]||'').localeCompare(b[field]||''));
+          if (sort === 'alpha-desc') return [...arr].sort((a,b) => (b[field]||'').localeCompare(a[field]||''));
+        }
+        return arr;
+      };
+      r = applySort(r, this.manualDateSort, 'log_date', 'date');
+      r = applySort(r, this.manualControlSort, 'control_no');
+      r = applySort(r, this.manualMaterialSort, 'material');
+      r = applySort(r, this.manualUnitSort, 'unit');
+      r = applySort(r, this.manualInchargeSort, 'incharge');
+      r = applySort(r, this.manualOriginSort, 'origin_project');
+      r = applySort(r, this.manualQtySort, 'qty', 'num');
+      r = applySort(r, this.manualLocationSort, 'project_location');
+      r = applySort(r, this.manualRemarksSort, 'remarks');
       return r;
     },
     filteredPOs() {
@@ -1477,24 +1580,24 @@ export default {
       this.poEditId=po.id; this.poEditMode=true; this.showPOForm=true;
     },
     async confirmDeletePO(id){ if(!confirm('Delete this Purchase Order?'))return; try{ await deletePO(id); await this.fetchPOs(); }catch(e){ alert('Failed to delete.'); } },
-    viewPO(po, event){
-      this.selectedPO={...po, items: po.items ? po.items.map(i=>({...i})) : []};
-      const clickY = event && event.clientY ? event.clientY : window.innerHeight * 0.5;
-      const maxTop = Math.max(16, window.innerHeight - 580);
-      this.poModalTop = Math.min(Math.max(16, clickY - 100), maxTop);
-      // Reset sort when opening a new PO
-      this.poDetailSortCol = '';
-      this.poDetailSortDir = 1;
-      // Reset filters
-      this.poDetailDescFilter = '';
-      this.poDetailStatusFilter = '';
-      this.poDetailRemarksFilter = '';
-      this.showDescFilterDropdown = false;
-      this.showStatusFilterDropdown = false;
-      this.showRemarksFilterDropdown = false;
-      this.poDetailSearch = '';
-      this.viewPOModal=true;
-    },
+    viewPO(po, event) {
+  this.selectedPO = { ...po, items: po.items ? po.items.map(i => ({...i})) : [] };
+  this.poDetailSortCol = '';
+  this.poDetailSortDir = 1;
+  this.poDetailDescFilter = '';
+  this.poDetailStatusFilter = '';
+  this.poDetailRemarksFilter = '';
+  this.showDescFilterDropdown = false;
+  this.showStatusFilterDropdown = false;
+  this.showRemarksFilterDropdown = false;
+  this.poDetailSearch = '';
+  this.viewPOModal = true;
+
+  // Lock body scroll so fixed overlay covers viewport correctly
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+},
     async saveDetailEdits(){
       try{ await updatePO(this.selectedPO.id, {...this.selectedPO}); await this.fetchPOs(); alert('Changes saved!'); }
       catch(e){ alert('Failed to save changes.'); }
@@ -1946,7 +2049,19 @@ button:active { transform: translateY(0); }
   font-weight: 600;
 }
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 999; backdrop-filter: blur(6px); animation: fadeIn 0.2s ease; padding: 16px; }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease;
+  padding: 16px;
+  overflow-y: auto;
+}
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 .modal { background: white; padding: 0; border-radius: 20px; width: 430px; max-width: 100%; text-align: center; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.4); max-height: 90vh; overflow-y: auto; }
 .modal-animate { animation: modalBounce 0.45s cubic-bezier(0.34,1.56,0.64,1) both; }
@@ -1981,7 +2096,15 @@ button:active { transform: translateY(0); }
 .po-status-cancelled { background: #f8d7da; color: #721c24; }
 .po-meta-label { color: #666; font-size: 11px; font-weight: 700; text-transform: uppercase; }
 
-.po-detail-modal { position: fixed; left: 50%; transform: translateX(-50%); top: 24px; width: min(1200px, 98vw); text-align: left; max-height: 92vh; overflow-y: auto; }
+/* REPLACE WITH this */
+.po-detail-modal {
+  position: relative;
+  width: min(1200px, 96vw);
+  text-align: left;
+  max-height: 88vh;
+  overflow-y: auto;
+  margin: auto;
+}
 .po-detail-header { padding: 0 20px 16px; }
 .po-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 12px; font-size: 13px; }
 .po-detail-table-wrapper { overflow-x: auto; margin: 0 20px 16px; border-radius: 8px; border: 1.5px solid #c8e6c9; -webkit-overflow-scrolling: touch; }
@@ -2065,6 +2188,7 @@ button:active { transform: translateY(0); }
   .actions-cell button { width: 100%; font-size: 11px; padding: 5px 6px; }
   .modal { width: 100%; border-radius: 16px 16px 0 0; position: fixed; bottom: 0; left: 0; right: 0; max-height: 88vh; }
   .modal-overlay { align-items: flex-end; padding: 0; }
+.modal-overlay:has(.po-detail-modal) { align-items: center; padding: 16px; }
   .po-detail-modal { width: 100%; border-radius: 16px 16px 0 0; max-height: 92vh; }
   .send-inv-modal { width: 100%; border-radius: 16px 16px 0 0; max-height: 92vh; }
   .po-meta-grid { grid-template-columns: 1fr; }
