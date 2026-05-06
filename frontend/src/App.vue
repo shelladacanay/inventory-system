@@ -326,6 +326,8 @@
                         <div class="filter-option" @click="wControlNoSort=''; showWControlSort=false" :class="{ 'option-active': !wControlNoSort }">No Filter</div>
                         <div class="filter-option" @click="wControlNoSort='alpha-asc'; showWControlSort=false" :class="{ 'option-active': wControlNoSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wControlNoSort='alpha-desc'; showWControlSort=false" :class="{ 'option-active': wControlNoSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueWithdrawalControlNos" :key="val" class="filter-option" @click="wControlNoSort='val:'+val; showWControlSort=false" :class="{ 'option-active': wControlNoSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Material
@@ -334,6 +336,8 @@
                         <div class="filter-option" @click="wMaterialSort=''; showWMaterialSort=false" :class="{ 'option-active': !wMaterialSort }">No Filter</div>
                         <div class="filter-option" @click="wMaterialSort='alpha-asc'; showWMaterialSort=false" :class="{ 'option-active': wMaterialSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wMaterialSort='alpha-desc'; showWMaterialSort=false" :class="{ 'option-active': wMaterialSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueWithdrawalMaterials" :key="val" class="filter-option" @click="wMaterialSort='val:'+val; showWMaterialSort=false" :class="{ 'option-active': wMaterialSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">In-charge
@@ -342,6 +346,8 @@
                         <div class="filter-option" @click="wInchargeSort=''; showWInchargeSort=false" :class="{ 'option-active': !wInchargeSort }">No Filter</div>
                         <div class="filter-option" @click="wInchargeSort='alpha-asc'; showWInchargeSort=false" :class="{ 'option-active': wInchargeSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wInchargeSort='alpha-desc'; showWInchargeSort=false" :class="{ 'option-active': wInchargeSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueWithdrawalIncharge" :key="val" class="filter-option" @click="wInchargeSort='val:'+val; showWInchargeSort=false" :class="{ 'option-active': wInchargeSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Origin Project Location
@@ -350,6 +356,8 @@
                         <div class="filter-option" @click="wOriginSort=''; showWOriginSort=false" :class="{ 'option-active': !wOriginSort }">No Filter</div>
                         <div class="filter-option" @click="wOriginSort='alpha-asc'; showWOriginSort=false" :class="{ 'option-active': wOriginSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wOriginSort='alpha-desc'; showWOriginSort=false" :class="{ 'option-active': wOriginSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueWithdrawalOrigins" :key="val" class="filter-option" @click="wOriginSort='val:'+val; showWOriginSort=false" :class="{ 'option-active': wOriginSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Qty
@@ -367,6 +375,8 @@
                         <div class="filter-option" @click="wLocationSort=''; showWLocationSort=false" :class="{ 'option-active': !wLocationSort }">No Filter</div>
                         <div class="filter-option" @click="wLocationSort='alpha-asc'; showWLocationSort=false" :class="{ 'option-active': wLocationSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wLocationSort='alpha-desc'; showWLocationSort=false" :class="{ 'option-active': wLocationSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueWithdrawalLocations" :key="val" class="filter-option" @click="wLocationSort='val:'+val; showWLocationSort=false" :class="{ 'option-active': wLocationSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Remarks
@@ -375,6 +385,8 @@
                         <div class="filter-option" @click="wRemarksSort=''; showWRemarksSort=false" :class="{ 'option-active': !wRemarksSort }">No Filter</div>
                         <div class="filter-option" @click="wRemarksSort='alpha-asc'; showWRemarksSort=false" :class="{ 'option-active': wRemarksSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wRemarksSort='alpha-desc'; showWRemarksSort=false" :class="{ 'option-active': wRemarksSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueWithdrawalRemarks" :key="val" class="filter-option" @click="wRemarksSort='val:'+val; showWRemarksSort=false" :class="{ 'option-active': wRemarksSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th>Actions</th>
@@ -451,6 +463,8 @@
                         <div class="filter-option" @click="manualControlSort=''; showManualControlSort=false" :class="{ 'option-active': !manualControlSort }">No Filter</div>
                         <div class="filter-option" @click="manualControlSort='alpha-asc'; showManualControlSort=false" :class="{ 'option-active': manualControlSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualControlSort='alpha-desc'; showManualControlSort=false" :class="{ 'option-active': manualControlSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueManualControlNos" :key="val" class="filter-option" @click="manualControlSort='val:'+val; showManualControlSort=false" :class="{ 'option-active': manualControlSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Material
@@ -459,6 +473,8 @@
                         <div class="filter-option" @click="manualMaterialSort=''; showManualMaterialSort=false" :class="{ 'option-active': !manualMaterialSort }">No Filter</div>
                         <div class="filter-option" @click="manualMaterialSort='alpha-asc'; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualMaterialSort='alpha-desc'; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueManualMaterials" :key="val" class="filter-option" @click="manualMaterialSort='val:'+val; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">In-charge
@@ -467,6 +483,8 @@
                         <div class="filter-option" @click="manualInchargeSort=''; showManualInchargeSort=false" :class="{ 'option-active': !manualInchargeSort }">No Filter</div>
                         <div class="filter-option" @click="manualInchargeSort='alpha-asc'; showManualInchargeSort=false" :class="{ 'option-active': manualInchargeSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualInchargeSort='alpha-desc'; showManualInchargeSort=false" :class="{ 'option-active': manualInchargeSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueManualIncharge" :key="val" class="filter-option" @click="manualInchargeSort='val:'+val; showManualInchargeSort=false" :class="{ 'option-active': manualInchargeSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Origin Project Location
@@ -475,6 +493,8 @@
                         <div class="filter-option" @click="manualOriginSort=''; showManualOriginSort=false" :class="{ 'option-active': !manualOriginSort }">No Filter</div>
                         <div class="filter-option" @click="manualOriginSort='alpha-asc'; showManualOriginSort=false" :class="{ 'option-active': manualOriginSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualOriginSort='alpha-desc'; showManualOriginSort=false" :class="{ 'option-active': manualOriginSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueManualOrigins" :key="val" class="filter-option" @click="manualOriginSort='val:'+val; showManualOriginSort=false" :class="{ 'option-active': manualOriginSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Qty
@@ -491,6 +511,8 @@
                         <div class="filter-option" @click="manualUnitSort=''; showManualUnitSort=false" :class="{ 'option-active': !manualUnitSort }">No Filter</div>
                         <div class="filter-option" @click="manualUnitSort='alpha-asc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualUnitSort='alpha-desc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueManualUnits" :key="val" class="filter-option" @click="manualUnitSort='val:'+val; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Project Location
@@ -499,6 +521,8 @@
                         <div class="filter-option" @click="manualLocationSort=''; showManualLocationSort=false" :class="{ 'option-active': !manualLocationSort }">No Filter</div>
                         <div class="filter-option" @click="manualLocationSort='alpha-asc'; showManualLocationSort=false" :class="{ 'option-active': manualLocationSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualLocationSort='alpha-desc'; showManualLocationSort=false" :class="{ 'option-active': manualLocationSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueManualProjectLocations" :key="val" class="filter-option" @click="manualLocationSort='val:'+val; showManualLocationSort=false" :class="{ 'option-active': manualLocationSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th style="position:relative">Remarks
@@ -507,6 +531,8 @@
                         <div class="filter-option" @click="manualRemarksSort=''; showManualRemarksSort=false" :class="{ 'option-active': !manualRemarksSort }">No Filter</div>
                         <div class="filter-option" @click="manualRemarksSort='alpha-asc'; showManualRemarksSort=false" :class="{ 'option-active': manualRemarksSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualRemarksSort='alpha-desc'; showManualRemarksSort=false" :class="{ 'option-active': manualRemarksSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueManualRemarksValues" :key="val" class="filter-option" @click="manualRemarksSort='val:'+val; showManualRemarksSort=false" :class="{ 'option-active': manualRemarksSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                       </div>
                     </th>
                     <th>Actions</th>
@@ -721,14 +747,18 @@
                       <div class="filter-option" @click="poListSourceSort=''; showPoSourceSort=false" :class="{ 'option-active': !poListSourceSort }">No Filter</div>
                       <div class="filter-option" @click="poListSourceSort='alpha-asc'; showPoSourceSort=false" :class="{ 'option-active': poListSourceSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListSourceSort='alpha-desc'; showPoSourceSort=false" :class="{ 'option-active': poListSourceSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniquePOSourceOfFunds" :key="val" class="filter-option" @click="poListSourceSort='val:'+val; showPoSourceSort=false" :class="{ 'option-active': poListSourceSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                     </div>
                   </th>
                   <th style="position:relative">Work Description
                     <button @click.stop="showPoWorkDescSort = !showPoWorkDescSort" class="column-filter-btn" :class="{ 'filter-active': poListWorkDescSort }">⚙</button>
-                    <div v-if="showPoWorkDescSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                    <div v-if="showPoWorkDescSort" @click.stop class="column-filter-dropdown" style="min-width: 200px;">
                       <div class="filter-option" @click="poListWorkDescSort=''; showPoWorkDescSort=false" :class="{ 'option-active': !poListWorkDescSort }">No Filter</div>
                       <div class="filter-option" @click="poListWorkDescSort='alpha-asc'; showPoWorkDescSort=false" :class="{ 'option-active': poListWorkDescSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListWorkDescSort='alpha-desc'; showPoWorkDescSort=false" :class="{ 'option-active': poListWorkDescSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniquePOWorkDescriptions" :key="val" class="filter-option" @click="poListWorkDescSort='val:'+val; showPoWorkDescSort=false" :class="{ 'option-active': poListWorkDescSort==='val:'+val }" style="font-size:12px;white-space:normal;">{{ val }}</div>
                     </div>
                   </th>
                   <th style="position:relative">Supplier
@@ -737,6 +767,8 @@
                       <div class="filter-option" @click="poListSupplierSort=''; showPoSupplierSort=false" :class="{ 'option-active': !poListSupplierSort }">No Filter</div>
                       <div class="filter-option" @click="poListSupplierSort='alpha-asc'; showPoSupplierSort=false" :class="{ 'option-active': poListSupplierSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListSupplierSort='alpha-desc'; showPoSupplierSort=false" :class="{ 'option-active': poListSupplierSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniquePOSuppliers" :key="val" class="filter-option" @click="poListSupplierSort='val:'+val; showPoSupplierSort=false" :class="{ 'option-active': poListSupplierSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                     </div>
                   </th>
                   <th style="position:relative">P.O. No.
@@ -745,6 +777,8 @@
                       <div class="filter-option" @click="poListPONoSort=''; showPoPoNoSort=false" :class="{ 'option-active': !poListPONoSort }">No Filter</div>
                       <div class="filter-option" @click="poListPONoSort='alpha-asc'; showPoPoNoSort=false" :class="{ 'option-active': poListPONoSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListPONoSort='alpha-desc'; showPoPoNoSort=false" :class="{ 'option-active': poListPONoSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniquePONumbers" :key="val" class="filter-option" @click="poListPONoSort='val:'+val; showPoPoNoSort=false" :class="{ 'option-active': poListPONoSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                     </div>
                   </th>
                   <th style="position:relative">P.R. No.
@@ -753,25 +787,28 @@
                       <div class="filter-option" @click="poListPRNoSort=''; showPoPRNoSort=false" :class="{ 'option-active': !poListPRNoSort }">No Filter</div>
                       <div class="filter-option" @click="poListPRNoSort='alpha-asc'; showPoPRNoSort=false" :class="{ 'option-active': poListPRNoSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListPRNoSort='alpha-desc'; showPoPRNoSort=false" :class="{ 'option-active': poListPRNoSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniquePRNumbers" :key="val" class="filter-option" @click="poListPRNoSort='val:'+val; showPoPRNoSort=false" :class="{ 'option-active': poListPRNoSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                     </div>
                   </th>
                   <th style="position:relative">Delivery Completed
                     <button @click.stop="showPoDeliverySort = !showPoDeliverySort" class="column-filter-btn" :class="{ 'filter-active': poListDeliverySort }">⚙</button>
                     <div v-if="showPoDeliverySort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListDeliverySort=''; showPoDeliverySort=false" :class="{ 'option-active': !poListDeliverySort }">No Filter</div>
-                      <div class="filter-option" @click="poListDeliverySort='alpha-asc'; showPoDeliverySort=false" :class="{ 'option-active': poListDeliverySort==='alpha-asc' }">Yes</div>
-                      <div class="filter-option" @click="poListDeliverySort='alpha-desc'; showPoDeliverySort=false" :class="{ 'option-active': poListDeliverySort==='alpha-desc' }">No</div>
+                      <div class="filter-option" @click="poListDeliverySort='alpha-asc'; showPoDeliverySort=false" :class="{ 'option-active': poListDeliverySort==='alpha-asc' }">A-Z</div>
+                      <div class="filter-option" @click="poListDeliverySort='alpha-desc'; showPoDeliverySort=false" :class="{ 'option-active': poListDeliverySort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniquePODeliveryDates" :key="val" class="filter-option" @click="poListDeliverySort='val:'+val; showPoDeliverySort=false" :class="{ 'option-active': poListDeliverySort==='val:'+val }" style="font-size:12px;">{{ formatDate2(val) }}</div>
                     </div>
                   </th>
                   <th style="position:relative">Status
                     <button @click.stop="showPoStatusSort = !showPoStatusSort" class="column-filter-btn" :class="{ 'filter-active': poListStatusSort }">⚙</button>
                     <div v-if="showPoStatusSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListStatusSort=''; showPoStatusSort=false" :class="{ 'option-active': !poListStatusSort }">No Filter</div>
-                      <div class="filter-option" @click="poListStatusSort='Pending'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='Pending' }">Pending</div>
-                      <div class="filter-option" @click="poListStatusSort='In Progress'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='In Progress' }">In Progress</div>
-                      <div class="filter-option" @click="poListStatusSort='Delivered'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='Delivered' }">Delivered</div>
-                      <div class="filter-option" @click="poListStatusSort='Completed'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='Completed' }">Completed</div>
-                      <div class="filter-option" @click="poListStatusSort='Cancelled'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='Cancelled' }">Cancelled</div>
+                      <div class="filter-option" @click="poListStatusSort='alpha-asc'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='alpha-asc' }">A-Z</div>
+                      <div class="filter-option" @click="poListStatusSort='alpha-desc'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniquePOStatuses" :key="val" class="filter-option" @click="poListStatusSort='val:'+val; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
                     </div>
                   </th>
                   <th>Actions</th>
@@ -1228,14 +1265,25 @@ export default {
         }
         return arr;
       };
-      r = applySort(r, this.wDateSort, 'withdraw_date', 'date');
-      r = applySort(r, this.wControlNoSort, 'control_no');
-      r = applySort(r, this.wMaterialSort, 'material');
-      r = applySort(r, this.wInchargeSort, 'incharge');
-      r = applySort(r, this.wOriginSort, 'item_project');
-      r = applySort(r, this.wQtySort, 'quantity_used', 'num');
-      r = applySort(r, this.wLocationSort, 'project_location');
-      r = applySort(r, this.wRemarksSort, 'remarks');
+      const applyFilter = (arr, sort, field) => {
+        if (!sort) return arr;
+        if (sort === 'alpha-asc') return [...arr].sort((a,b) => (a[field]||'').localeCompare(b[field]||''));
+        if (sort === 'alpha-desc') return [...arr].sort((a,b) => (b[field]||'').localeCompare(a[field]||''));
+        if (sort === 'num-asc') return [...arr].sort((a,b) => (a[field]||0) - (b[field]||0));
+        if (sort === 'num-desc') return [...arr].sort((a,b) => (b[field]||0) - (a[field]||0));
+        if (sort === 'date-asc') return [...arr].sort((a,b) => new Date(a[field]||0) - new Date(b[field]||0));
+        if (sort === 'date-desc') return [...arr].sort((a,b) => new Date(b[field]||0) - new Date(a[field]||0));
+        if (sort.startsWith('val:')) return arr.filter(i => (i[field]||'') === sort.slice(4));
+        return arr;
+      };
+      r = applyFilter(r, this.wDateSort, 'withdraw_date');
+      r = applyFilter(r, this.wControlNoSort, 'control_no');
+      r = applyFilter(r, this.wMaterialSort, 'material');
+      r = applyFilter(r, this.wInchargeSort, 'incharge');
+      r = applyFilter(r, this.wOriginSort, 'item_project');
+      r = applyFilter(r, this.wQtySort, 'quantity_used');
+      r = applyFilter(r, this.wLocationSort, 'project_location');
+      r = applyFilter(r, this.wRemarksSort, 'remarks');
       return r;
     },
     filteredManualLogs() {
@@ -1257,15 +1305,26 @@ export default {
         }
         return arr;
       };
-      r = applySort(r, this.manualDateSort, 'log_date', 'date');
-      r = applySort(r, this.manualControlSort, 'control_no');
-      r = applySort(r, this.manualMaterialSort, 'material');
-      r = applySort(r, this.manualUnitSort, 'unit');
-      r = applySort(r, this.manualInchargeSort, 'incharge');
-      r = applySort(r, this.manualOriginSort, 'origin_project');
-      r = applySort(r, this.manualQtySort, 'qty', 'num');
-      r = applySort(r, this.manualLocationSort, 'project_location');
-      r = applySort(r, this.manualRemarksSort, 'remarks');
+      const applyFilter = (arr, sort, field) => {
+        if (!sort) return arr;
+        if (sort === 'alpha-asc') return [...arr].sort((a,b) => (a[field]||'').localeCompare(b[field]||''));
+        if (sort === 'alpha-desc') return [...arr].sort((a,b) => (b[field]||'').localeCompare(a[field]||''));
+        if (sort === 'num-asc') return [...arr].sort((a,b) => (a[field]||0) - (b[field]||0));
+        if (sort === 'num-desc') return [...arr].sort((a,b) => (b[field]||0) - (a[field]||0));
+        if (sort === 'date-asc') return [...arr].sort((a,b) => new Date(a[field]||0) - new Date(b[field]||0));
+        if (sort === 'date-desc') return [...arr].sort((a,b) => new Date(b[field]||0) - new Date(a[field]||0));
+        if (sort.startsWith('val:')) return arr.filter(i => (i[field]||'') === sort.slice(4));
+        return arr;
+      };
+      r = applyFilter(r, this.manualDateSort, 'log_date');
+      r = applyFilter(r, this.manualControlSort, 'control_no');
+      r = applyFilter(r, this.manualMaterialSort, 'material');
+      r = applyFilter(r, this.manualUnitSort, 'unit');
+      r = applyFilter(r, this.manualInchargeSort, 'incharge');
+      r = applyFilter(r, this.manualOriginSort, 'origin_project');
+      r = applyFilter(r, this.manualQtySort, 'qty');
+      r = applyFilter(r, this.manualLocationSort, 'project_location');
+      r = applyFilter(r, this.manualRemarksSort, 'remarks');
       return r;
     },
     filteredPOs() {
@@ -1301,6 +1360,7 @@ export default {
         if (!sort) return arr;
         if (sort === 'alpha-asc') return [...arr].sort((a,b) => (a[field]||'').localeCompare(b[field]||''));
         if (sort === 'alpha-desc') return [...arr].sort((a,b) => (b[field]||'').localeCompare(a[field]||''));
+        if (sort.startsWith('val:')) return arr.filter(i => (i[field]||'') === sort.slice(4));
         return arr;
       };
       r = applySort(r, this.poListSourceSort, 'source_of_fund');
@@ -1368,6 +1428,27 @@ export default {
       return items;
     },
     uniqueMaterials(){ return [...new Set(this.items.map(i=>i.material).filter(Boolean))].sort(); },
+    uniqueInventoryProjects(){ return [...new Set(this.items.map(i=>i.project).filter(Boolean))].sort(); },
+    uniqueInventoryUnits(){ return [...new Set(this.items.map(i=>i.unit).filter(Boolean))].sort(); },
+    uniqueWithdrawalMaterials(){ return [...new Set(this.withdrawals.map(w=>w.material).filter(Boolean))].sort(); },
+    uniquePOSourceOfFunds(){ return [...new Set(this.pos.map(p=>p.source_of_fund).filter(Boolean))].sort(); },
+    uniquePOWorkDescriptions(){ return [...new Set(this.pos.map(p=>p.work_description).filter(Boolean))].sort(); },
+    uniquePOSuppliers(){ return [...new Set(this.pos.map(p=>p.supplier).filter(Boolean))].sort(); },
+    uniquePONumbers(){ return [...new Set(this.pos.map(p=>p.po_no).filter(Boolean))].sort(); },
+    uniquePRNumbers(){ return [...new Set(this.pos.map(p=>p.pr_no).filter(Boolean))].sort(); },
+    uniquePODeliveryDates(){ return [...new Set(this.pos.map(p=>p.delivery_date_completed).filter(Boolean))].sort(); },
+    uniquePOStatuses(){ return [...new Set(this.pos.map(p=>p.status).filter(Boolean))].sort(); },
+    uniqueWithdrawalControlNos(){ return [...new Set(this.withdrawals.map(w=>w.control_no).filter(Boolean))].sort(); },
+    uniqueWithdrawalIncharge(){ return [...new Set(this.withdrawals.map(w=>w.incharge).filter(Boolean))].sort(); },
+    uniqueWithdrawalOrigins(){ return [...new Set(this.withdrawals.map(w=>w.item_project).filter(Boolean))].sort(); },
+    uniqueWithdrawalLocations(){ return [...new Set(this.withdrawals.map(w=>w.project_location).filter(Boolean))].sort(); },
+    uniqueWithdrawalRemarks(){ return [...new Set(this.withdrawals.map(w=>w.remarks).filter(Boolean))].sort(); },
+    uniqueWithdrawalUnits(){ return [...new Set(this.withdrawals.map(w=>w.unit).filter(Boolean))].sort(); },
+    uniqueManualControlNos(){ return [...new Set(this.manualLogs.map(l=>l.control_no).filter(Boolean))].sort(); },
+    uniqueManualUnits(){ return [...new Set(this.manualLogs.map(l=>l.unit).filter(Boolean))].sort(); },
+    uniqueManualOrigins(){ return [...new Set(this.manualLogs.map(l=>l.origin_project).filter(Boolean))].sort(); },
+    uniqueManualProjectLocations(){ return [...new Set(this.manualLogs.map(l=>l.project_location).filter(Boolean))].sort(); },
+    uniqueManualRemarksValues(){ return [...new Set(this.manualLogs.map(l=>l.remarks).filter(Boolean))].sort(); },
     uniqueProjects(){ return [...new Set(this.items.map(i=>i.project).filter(Boolean))].sort(); },
     uniqueRemarks(){ return [...new Set(this.items.map(i=> (i.remarks||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); },
     remarksSortOptions(){
