@@ -797,7 +797,7 @@
             </div>
 
             <!-- PO DETAIL MODAL -->
-            <div v-if="viewPOModal" class="modal-overlay" @click.self="closePOModal">
+            <div v-if="viewPOModal" class="modal-overlay">
              <div class="modal modal-animate po-detail-modal" ref="poDetailModal">
                 <div class="modal-accent-bar"></div>
                 <div class="po-detail-header">
