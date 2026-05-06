@@ -797,7 +797,7 @@
             </div>
 
             <!-- PO DETAIL MODAL -->
-            <div v-if="viewPOModal" class="modal-overlay" @click.self="viewPOModal=false">
+            <div v-if="viewPOModal" class="modal-overlay" @click.self="closePOModal">
              <div class="modal modal-animate po-detail-modal" ref="poDetailModal">
                 <div class="modal-accent-bar"></div>
                 <div class="po-detail-header">
@@ -917,7 +917,7 @@
                   <button @click="sendPOToInventory(selectedPO)" class="btn-send-inv">📦 Send to Inventory</button>
                   <button @click="printSinglePO(selectedPO)" class="btn-print">Print</button>
                   <button @click="exportSinglePOExcel(selectedPO)" class="btn-excel">Export Excel</button>
-                  <button @click="viewPOModal=false" class="btn-gray">Close</button>
+                  <button @click="closePOModal" class="btn-gray">Close</button>
                 </div>
               </div>
             </div>
@@ -1597,6 +1597,17 @@ export default {
   document.body.style.overflow = 'hidden';
   document.body.style.position = 'fixed';
   document.body.style.width = '100%';
+  document.body.style.top = `-${window.scrollY}px`;
+},
+closePOModal() {
+  this.viewPOModal = false;
+  // Restore body scroll
+  const scrollY = document.body.style.top;
+  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.width = '';
+  document.body.style.top = '';
+  window.scrollTo(0, parseInt(scrollY || '0') * -1);
 },
     async saveDetailEdits(){
       try{ await updatePO(this.selectedPO.id, {...this.selectedPO}); await this.fetchPOs(); alert('Changes saved!'); }
@@ -1633,7 +1644,7 @@ export default {
         ));
         await this.fetchItems();
         this.sendToInvModal = false;
-        this.viewPOModal = false;
+        this.closePOModal();
         this.activeTab = 'inventory';
         alert(`✅ ${toSend.length} item(s) successfully added to Inventory!`);
       } catch(e) { alert('Failed to send to inventory: ' + e.message); }
@@ -2051,7 +2062,12 @@ button:active { transform: translateY(0); }
 
 .modal-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0,0,0,0.65);
   display: flex;
   align-items: center;
