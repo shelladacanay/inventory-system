@@ -360,6 +360,7 @@
                         <div class="filter-option" @click="wQtySort='num-desc'; showWQtySort=false" :class="{ 'option-active': wQtySort==='num-desc' }">High to Low</div>
                       </div>
                     </th>
+                    <th>Unit</th>
                     <th style="position:relative">Project Location
                       <button @click.stop="showWLocationSort = !showWLocationSort" class="column-filter-btn" :class="{ 'filter-active': wLocationSort }">⚙</button>
                       <div v-if="showWLocationSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
@@ -387,6 +388,7 @@
                       <td>{{ w.incharge || '—' }}</td>
                       <td>{{ w.item_project }}</td>
                       <td><strong>{{ w.quantity_used }}</strong></td>
+                      <td>{{ w.unit || '—' }}</td>
                       <td>{{ w.project_location }}</td>
                       <td class="remarks-cell">{{ w.remarks || '—' }}</td>
                       <td class="actions-cell">
@@ -395,7 +397,7 @@
                       </td>
                     </tr>
                     <tr v-if="filteredWithdrawals.length===0">
-                      <td colspan="10" class="empty-row">No withdrawal records found.</td>
+                      <td colspan="11" class="empty-row">No withdrawal records found.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -409,10 +411,10 @@
                   <div class="form-field"><label class="field-label">Date :</label><input type="date" v-model="manualForm.log_date"/></div>
                   <div class="form-field"><label class="field-label">Control # :</label><input v-model="manualForm.control_no" placeholder="e.g. RIS-101-26-03-001"/></div>
                   <div class="form-field" style="position:relative"><label class="field-label">Material :</label><input v-model="manualForm.material" placeholder="Material name" @input="showManualMaterialSug=true" @blur="hideManualMaterialSug" autocomplete="off"/><div v-if="showManualMaterialSug && manualMaterialSuggestions.length" class="suggestions-box"><div v-for="m in manualMaterialSuggestions" :key="m" class="suggestion-item" @mousedown.prevent="pickManualMaterial(m)">{{ m }}</div></div></div>
-                  <div class="form-field"><label class="field-label">Unit :</label><select v-model="manualForm.unit" class="select-input"><option value="">-- Select Unit --</option><option v-for="u in allUnitOptions" :key="u" :value="u">{{ u }}</option></select></div>
                   <div class="form-field" style="position:relative"><label class="field-label">In-charge :</label><input v-model="manualForm.incharge" placeholder="Person in-charge" @input="showManualInchargeSug=true" @blur="hideManualInchargeSug" autocomplete="off"/><div v-if="showManualInchargeSug && manualInchargeSuggestions.length" class="suggestions-box"><div v-for="i in manualInchargeSuggestions" :key="i" class="suggestion-item" @mousedown.prevent="pickManualIncharge(i)">{{ i }}</div></div></div>
                   <div class="form-field" style="position:relative"><label class="field-label">Origin Project Location :</label><input v-model="manualForm.origin_project" placeholder="Origin location" @input="showManualOriginSug=true" @blur="hideManualOriginSug" autocomplete="off"/><div v-if="showManualOriginSug && manualOriginSuggestions.length" class="suggestions-box"><div v-for="o in manualOriginSuggestions" :key="o" class="suggestion-item" @mousedown.prevent="pickManualOrigin(o)">{{ o }}</div></div></div>
                   <div class="form-field"><label class="field-label">Qty :</label><input type="number" v-model.number="manualForm.qty" min="0" placeholder="0"/></div>
+                  <div class="form-field"><label class="field-label">Unit :</label><select v-model="manualForm.unit" class="select-input"><option value="">-- Select Unit --</option><option v-for="u in allUnitOptions" :key="u" :value="u">{{ u }}</option></select></div>
                   <div class="form-field" style="position:relative"><label class="field-label">Project Location :</label><input v-model="manualForm.project_location" placeholder="Project location" @input="showManualLocationSug=true" @blur="hideManualLocationSug" autocomplete="off"/><div v-if="showManualLocationSug && manualLocationSuggestions.length" class="suggestions-box"><div v-for="l in manualLocationSuggestions" :key="l" class="suggestion-item" @mousedown.prevent="pickManualLocation(l)">{{ l }}</div></div></div>
                   <div class="form-field"><label class="field-label">Remarks :</label><input v-model="manualForm.remarks" placeholder="Optional notes"/></div>
                 </div>
@@ -459,14 +461,6 @@
                         <div class="filter-option" @click="manualMaterialSort='alpha-desc'; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='alpha-desc' }">Z-A</div>
                       </div>
                     </th>
-                    <th style="position:relative">Unit
-                      <button @click.stop="showManualUnitSort = !showManualUnitSort" class="column-filter-btn" :class="{ 'filter-active': manualUnitSort }">⚙</button>
-                      <div v-if="showManualUnitSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
-                        <div class="filter-option" @click="manualUnitSort=''; showManualUnitSort=false" :class="{ 'option-active': !manualUnitSort }">No Filter</div>
-                        <div class="filter-option" @click="manualUnitSort='alpha-asc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-asc' }">A-Z</div>
-                        <div class="filter-option" @click="manualUnitSort='alpha-desc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-desc' }">Z-A</div>
-                      </div>
-                    </th>
                     <th style="position:relative">In-charge
                       <button @click.stop="showManualInchargeSort = !showManualInchargeSort" class="column-filter-btn" :class="{ 'filter-active': manualInchargeSort }">⚙</button>
                       <div v-if="showManualInchargeSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
@@ -489,6 +483,14 @@
                         <div class="filter-option" @click="manualQtySort=''; showManualQtySort=false" :class="{ 'option-active': !manualQtySort }">No Filter</div>
                         <div class="filter-option" @click="manualQtySort='num-asc'; showManualQtySort=false" :class="{ 'option-active': manualQtySort==='num-asc' }">Low to High</div>
                         <div class="filter-option" @click="manualQtySort='num-desc'; showManualQtySort=false" :class="{ 'option-active': manualQtySort==='num-desc' }">High to Low</div>
+                      </div>
+                    </th>
+                    <th style="position:relative">Unit
+                      <button @click.stop="showManualUnitSort = !showManualUnitSort" class="column-filter-btn" :class="{ 'filter-active': manualUnitSort }">⚙</button>
+                      <div v-if="showManualUnitSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="manualUnitSort=''; showManualUnitSort=false" :class="{ 'option-active': !manualUnitSort }">No Filter</div>
+                        <div class="filter-option" @click="manualUnitSort='alpha-asc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="manualUnitSort='alpha-desc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-desc' }">Z-A</div>
                       </div>
                     </th>
                     <th style="position:relative">Project Location
@@ -515,10 +517,10 @@
                       <td class="date-cell">{{ log.log_date ? formatDate2(log.log_date) : '—' }}</td>
                       <td>{{ log.control_no || '—' }}</td>
                       <td>{{ log.material }}</td>
-                      <td>{{ log.unit || '—' }}</td>
                       <td>{{ log.incharge || '—' }}</td>
                       <td>{{ log.origin_project }}</td>
                       <td><strong>{{ log.qty }}</strong></td>
+                      <td>{{ log.unit || '—' }}</td>
                       <td>{{ log.project_location }}</td>
                       <td class="remarks-cell">{{ log.remarks }}</td>
                       <td class="actions-cell">
@@ -797,7 +799,7 @@
             </div>
 
             <!-- PO DETAIL MODAL -->
-            <div v-if="viewPOModal" class="modal-overlay">
+            <div v-if="viewPOModal" class="modal-overlay" @mousedown="handleOverlayMousedown" @click="handleOverlayClick">
              <div class="modal modal-animate po-detail-modal" ref="poDetailModal">
                 <div class="modal-accent-bar"></div>
                 <div class="po-detail-header">
@@ -1608,6 +1610,14 @@ closePOModal() {
   document.body.style.width = '';
   document.body.style.top = '';
   window.scrollTo(0, parseInt(scrollY || '0') * -1);
+},
+handleOverlayMousedown(e) {
+  this._overlayMousedownTarget = e.target;
+},
+handleOverlayClick(e) {
+  if (e.target === e.currentTarget && this._overlayMousedownTarget === e.currentTarget) {
+    this.closePOModal();
+  }
 },
     async saveDetailEdits(){
       try{ await updatePO(this.selectedPO.id, {...this.selectedPO}); await this.fetchPOs(); alert('Changes saved!'); }
