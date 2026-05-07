@@ -242,8 +242,8 @@
                   <th>Unit</th><th>Quantity</th><th>Withdraw</th>
                   <th>Remaining</th>
                   <th style="position:relative">Remarks
-                    <button @click.stop="showRemarksDropdown = !showRemarksDropdown" class="column-filter-btn" :class="{ 'filter-active': remarksSortOption }">⚙</button>
-                    <div v-if="showRemarksDropdown" @click.stop class="column-filter-dropdown" style="min-width: 180px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'invRemarks' ? null : 'invRemarks'" class="column-filter-btn" :class="{ 'filter-active': remarksSortOption }">⚙</button>
+                    <div v-if="activeDropdown === 'invRemarks'" @click.stop class="column-filter-dropdown" style="min-width: 180px;">
                       <div class="filter-option" @click="remarksSortOption=''; showRemarksDropdown=false" :class="{ 'option-active': !remarksSortOption }">No Filter</div>
                       <div class="filter-option" @click="remarksSortOption='alpha-asc'; showRemarksDropdown=false" :class="{ 'option-active': remarksSortOption==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="remarksSortOption='alpha-desc'; showRemarksDropdown=false" :class="{ 'option-active': remarksSortOption==='alpha-desc' }">Z-A</div>
@@ -313,16 +313,16 @@
                   <thead><tr>
                     <th>#</th>
                     <th style="position:relative">Date
-                      <button @click.stop="showWDateSort = !showWDateSort" class="column-filter-btn" :class="{ 'filter-active': wDateSort }">⚙</button>
-                      <div v-if="showWDateSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wDate' ? null : 'wDate'" class="column-filter-btn" :class="{ 'filter-active': wDateSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wDate'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wDateSort=''; showWDateSort=false" :class="{ 'option-active': !wDateSort }">No Filter</div>
                         <div class="filter-option" @click="wDateSort='date-asc'; showWDateSort=false" :class="{ 'option-active': wDateSort==='date-asc' }">Oldest First</div>
                         <div class="filter-option" @click="wDateSort='date-desc'; showWDateSort=false" :class="{ 'option-active': wDateSort==='date-desc' }">Newest First</div>
                       </div>
                     </th>
                     <th style="position:relative">Control #
-                      <button @click.stop="showWControlSort = !showWControlSort" class="column-filter-btn" :class="{ 'filter-active': wControlNoSort }">⚙</button>
-                      <div v-if="showWControlSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wControl' ? null : 'wControl'" class="column-filter-btn" :class="{ 'filter-active': wControlNoSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wControl'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wControlNoSort=''; showWControlSort=false" :class="{ 'option-active': !wControlNoSort }">No Filter</div>
                         <div class="filter-option" @click="wControlNoSort='alpha-asc'; showWControlSort=false" :class="{ 'option-active': wControlNoSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wControlNoSort='alpha-desc'; showWControlSort=false" :class="{ 'option-active': wControlNoSort==='alpha-desc' }">Z-A</div>
@@ -331,8 +331,8 @@
                       </div>
                     </th>
                     <th style="position:relative">Material
-                      <button @click.stop="showWMaterialSort = !showWMaterialSort" class="column-filter-btn" :class="{ 'filter-active': wMaterialSort }">⚙</button>
-                      <div v-if="showWMaterialSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wMaterial' ? null : 'wMaterial'" class="column-filter-btn" :class="{ 'filter-active': wMaterialSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wMaterial'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wMaterialSort=''; showWMaterialSort=false" :class="{ 'option-active': !wMaterialSort }">No Filter</div>
                         <div class="filter-option" @click="wMaterialSort='alpha-asc'; showWMaterialSort=false" :class="{ 'option-active': wMaterialSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wMaterialSort='alpha-desc'; showWMaterialSort=false" :class="{ 'option-active': wMaterialSort==='alpha-desc' }">Z-A</div>
@@ -341,8 +341,8 @@
                       </div>
                     </th>
                     <th style="position:relative">In-charge
-                      <button @click.stop="showWInchargeSort = !showWInchargeSort" class="column-filter-btn" :class="{ 'filter-active': wInchargeSort }">⚙</button>
-                      <div v-if="showWInchargeSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wIncharge' ? null : 'wIncharge'" class="column-filter-btn" :class="{ 'filter-active': wInchargeSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wIncharge'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wInchargeSort=''; showWInchargeSort=false" :class="{ 'option-active': !wInchargeSort }">No Filter</div>
                         <div class="filter-option" @click="wInchargeSort='alpha-asc'; showWInchargeSort=false" :class="{ 'option-active': wInchargeSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wInchargeSort='alpha-desc'; showWInchargeSort=false" :class="{ 'option-active': wInchargeSort==='alpha-desc' }">Z-A</div>
@@ -351,8 +351,8 @@
                       </div>
                     </th>
                     <th style="position:relative">Origin Project Location
-                      <button @click.stop="showWOriginSort = !showWOriginSort" class="column-filter-btn" :class="{ 'filter-active': wOriginSort }">⚙</button>
-                      <div v-if="showWOriginSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wOrigin' ? null : 'wOrigin'" class="column-filter-btn" :class="{ 'filter-active': wOriginSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wOrigin'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wOriginSort=''; showWOriginSort=false" :class="{ 'option-active': !wOriginSort }">No Filter</div>
                         <div class="filter-option" @click="wOriginSort='alpha-asc'; showWOriginSort=false" :class="{ 'option-active': wOriginSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wOriginSort='alpha-desc'; showWOriginSort=false" :class="{ 'option-active': wOriginSort==='alpha-desc' }">Z-A</div>
@@ -361,17 +361,26 @@
                       </div>
                     </th>
                     <th style="position:relative">Qty
-                      <button @click.stop="showWQtySort = !showWQtySort" class="column-filter-btn" :class="{ 'filter-active': wQtySort }">⚙</button>
-                      <div v-if="showWQtySort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wQty' ? null : 'wQty'" class="column-filter-btn" :class="{ 'filter-active': wQtySort }">⚙</button>
+                      <div v-if="activeDropdown === 'wQty'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wQtySort=''; showWQtySort=false" :class="{ 'option-active': !wQtySort }">No Filter</div>
                         <div class="filter-option" @click="wQtySort='num-asc'; showWQtySort=false" :class="{ 'option-active': wQtySort==='num-asc' }">Low to High</div>
                         <div class="filter-option" @click="wQtySort='num-desc'; showWQtySort=false" :class="{ 'option-active': wQtySort==='num-desc' }">High to Low</div>
                       </div>
                     </th>
-                    <th>Unit</th>
+                    <th style="position:relative">Unit
+                      <button @click.stop="activeDropdown = activeDropdown === 'wUnit' ? null : 'wUnit'" class="column-filter-btn" :class="{ 'filter-active': wUnitSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wUnit'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                        <div class="filter-option" @click="wUnitSort=''" :class="{ 'option-active': !wUnitSort }">No Filter</div>
+                        <div class="filter-option" @click="wUnitSort='alpha-asc'" :class="{ 'option-active': wUnitSort==='alpha-asc' }">A-Z</div>
+                        <div class="filter-option" @click="wUnitSort='alpha-desc'" :class="{ 'option-active': wUnitSort==='alpha-desc' }">Z-A</div>
+                        <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                        <div v-for="val in uniqueWithdrawalUnits" :key="val" class="filter-option" @click="wUnitSort='val:'+val" :class="{ 'option-active': wUnitSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
+                      </div>
+                    </th>
                     <th style="position:relative">Project Location
-                      <button @click.stop="showWLocationSort = !showWLocationSort" class="column-filter-btn" :class="{ 'filter-active': wLocationSort }">⚙</button>
-                      <div v-if="showWLocationSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wLocation' ? null : 'wLocation'" class="column-filter-btn" :class="{ 'filter-active': wLocationSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wLocation'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wLocationSort=''; showWLocationSort=false" :class="{ 'option-active': !wLocationSort }">No Filter</div>
                         <div class="filter-option" @click="wLocationSort='alpha-asc'; showWLocationSort=false" :class="{ 'option-active': wLocationSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wLocationSort='alpha-desc'; showWLocationSort=false" :class="{ 'option-active': wLocationSort==='alpha-desc' }">Z-A</div>
@@ -380,8 +389,8 @@
                       </div>
                     </th>
                     <th style="position:relative">Remarks
-                      <button @click.stop="showWRemarksSort = !showWRemarksSort" class="column-filter-btn" :class="{ 'filter-active': wRemarksSort }">⚙</button>
-                      <div v-if="showWRemarksSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'wRemarks' ? null : 'wRemarks'" class="column-filter-btn" :class="{ 'filter-active': wRemarksSort }">⚙</button>
+                      <div v-if="activeDropdown === 'wRemarks'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="wRemarksSort=''; showWRemarksSort=false" :class="{ 'option-active': !wRemarksSort }">No Filter</div>
                         <div class="filter-option" @click="wRemarksSort='alpha-asc'; showWRemarksSort=false" :class="{ 'option-active': wRemarksSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="wRemarksSort='alpha-desc'; showWRemarksSort=false" :class="{ 'option-active': wRemarksSort==='alpha-desc' }">Z-A</div>
@@ -450,16 +459,16 @@
                   <thead><tr>
                     <th>#</th>
                     <th style="position:relative">Date
-                      <button @click.stop="showManualDateSort = !showManualDateSort" class="column-filter-btn" :class="{ 'filter-active': manualDateSort }">⚙</button>
-                      <div v-if="showManualDateSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualDate' ? null : 'manualDate'" class="column-filter-btn" :class="{ 'filter-active': manualDateSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualDate'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualDateSort=''; showManualDateSort=false" :class="{ 'option-active': !manualDateSort }">No Filter</div>
                         <div class="filter-option" @click="manualDateSort='date-asc'; showManualDateSort=false" :class="{ 'option-active': manualDateSort==='date-asc' }">Oldest First</div>
                         <div class="filter-option" @click="manualDateSort='date-desc'; showManualDateSort=false" :class="{ 'option-active': manualDateSort==='date-desc' }">Newest First</div>
                       </div>
                     </th>
                     <th style="position:relative">Control #
-                      <button @click.stop="showManualControlSort = !showManualControlSort" class="column-filter-btn" :class="{ 'filter-active': manualControlSort }">⚙</button>
-                      <div v-if="showManualControlSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualControl' ? null : 'manualControl'" class="column-filter-btn" :class="{ 'filter-active': manualControlSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualControl'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualControlSort=''; showManualControlSort=false" :class="{ 'option-active': !manualControlSort }">No Filter</div>
                         <div class="filter-option" @click="manualControlSort='alpha-asc'; showManualControlSort=false" :class="{ 'option-active': manualControlSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualControlSort='alpha-desc'; showManualControlSort=false" :class="{ 'option-active': manualControlSort==='alpha-desc' }">Z-A</div>
@@ -468,8 +477,8 @@
                       </div>
                     </th>
                     <th style="position:relative">Material
-                      <button @click.stop="showManualMaterialSort = !showManualMaterialSort" class="column-filter-btn" :class="{ 'filter-active': manualMaterialSort }">⚙</button>
-                      <div v-if="showManualMaterialSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualMaterial' ? null : 'manualMaterial'" class="column-filter-btn" :class="{ 'filter-active': manualMaterialSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualMaterial'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualMaterialSort=''; showManualMaterialSort=false" :class="{ 'option-active': !manualMaterialSort }">No Filter</div>
                         <div class="filter-option" @click="manualMaterialSort='alpha-asc'; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualMaterialSort='alpha-desc'; showManualMaterialSort=false" :class="{ 'option-active': manualMaterialSort==='alpha-desc' }">Z-A</div>
@@ -478,8 +487,8 @@
                       </div>
                     </th>
                     <th style="position:relative">In-charge
-                      <button @click.stop="showManualInchargeSort = !showManualInchargeSort" class="column-filter-btn" :class="{ 'filter-active': manualInchargeSort }">⚙</button>
-                      <div v-if="showManualInchargeSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualIncharge' ? null : 'manualIncharge'" class="column-filter-btn" :class="{ 'filter-active': manualInchargeSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualIncharge'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualInchargeSort=''; showManualInchargeSort=false" :class="{ 'option-active': !manualInchargeSort }">No Filter</div>
                         <div class="filter-option" @click="manualInchargeSort='alpha-asc'; showManualInchargeSort=false" :class="{ 'option-active': manualInchargeSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualInchargeSort='alpha-desc'; showManualInchargeSort=false" :class="{ 'option-active': manualInchargeSort==='alpha-desc' }">Z-A</div>
@@ -488,8 +497,8 @@
                       </div>
                     </th>
                     <th style="position:relative">Origin Project Location
-                      <button @click.stop="showManualOriginSort = !showManualOriginSort" class="column-filter-btn" :class="{ 'filter-active': manualOriginSort }">⚙</button>
-                      <div v-if="showManualOriginSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualOrigin' ? null : 'manualOrigin'" class="column-filter-btn" :class="{ 'filter-active': manualOriginSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualOrigin'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualOriginSort=''; showManualOriginSort=false" :class="{ 'option-active': !manualOriginSort }">No Filter</div>
                         <div class="filter-option" @click="manualOriginSort='alpha-asc'; showManualOriginSort=false" :class="{ 'option-active': manualOriginSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualOriginSort='alpha-desc'; showManualOriginSort=false" :class="{ 'option-active': manualOriginSort==='alpha-desc' }">Z-A</div>
@@ -498,16 +507,16 @@
                       </div>
                     </th>
                     <th style="position:relative">Qty
-                      <button @click.stop="showManualQtySort = !showManualQtySort" class="column-filter-btn" :class="{ 'filter-active': manualQtySort }">⚙</button>
-                      <div v-if="showManualQtySort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualQty' ? null : 'manualQty'" class="column-filter-btn" :class="{ 'filter-active': manualQtySort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualQty'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualQtySort=''; showManualQtySort=false" :class="{ 'option-active': !manualQtySort }">No Filter</div>
                         <div class="filter-option" @click="manualQtySort='num-asc'; showManualQtySort=false" :class="{ 'option-active': manualQtySort==='num-asc' }">Low to High</div>
                         <div class="filter-option" @click="manualQtySort='num-desc'; showManualQtySort=false" :class="{ 'option-active': manualQtySort==='num-desc' }">High to Low</div>
                       </div>
                     </th>
                     <th style="position:relative">Unit
-                      <button @click.stop="showManualUnitSort = !showManualUnitSort" class="column-filter-btn" :class="{ 'filter-active': manualUnitSort }">⚙</button>
-                      <div v-if="showManualUnitSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualUnit' ? null : 'manualUnit'" class="column-filter-btn" :class="{ 'filter-active': manualUnitSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualUnit'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualUnitSort=''; showManualUnitSort=false" :class="{ 'option-active': !manualUnitSort }">No Filter</div>
                         <div class="filter-option" @click="manualUnitSort='alpha-asc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualUnitSort='alpha-desc'; showManualUnitSort=false" :class="{ 'option-active': manualUnitSort==='alpha-desc' }">Z-A</div>
@@ -516,8 +525,8 @@
                       </div>
                     </th>
                     <th style="position:relative">Project Location
-                      <button @click.stop="showManualLocationSort = !showManualLocationSort" class="column-filter-btn" :class="{ 'filter-active': manualLocationSort }">⚙</button>
-                      <div v-if="showManualLocationSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualLocation' ? null : 'manualLocation'" class="column-filter-btn" :class="{ 'filter-active': manualLocationSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualLocation'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualLocationSort=''; showManualLocationSort=false" :class="{ 'option-active': !manualLocationSort }">No Filter</div>
                         <div class="filter-option" @click="manualLocationSort='alpha-asc'; showManualLocationSort=false" :class="{ 'option-active': manualLocationSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualLocationSort='alpha-desc'; showManualLocationSort=false" :class="{ 'option-active': manualLocationSort==='alpha-desc' }">Z-A</div>
@@ -526,8 +535,8 @@
                       </div>
                     </th>
                     <th style="position:relative">Remarks
-                      <button @click.stop="showManualRemarksSort = !showManualRemarksSort" class="column-filter-btn" :class="{ 'filter-active': manualRemarksSort }">⚙</button>
-                      <div v-if="showManualRemarksSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <button @click.stop="activeDropdown = activeDropdown === 'manualRemarks' ? null : 'manualRemarks'" class="column-filter-btn" :class="{ 'filter-active': manualRemarksSort }">⚙</button>
+                      <div v-if="activeDropdown === 'manualRemarks'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                         <div class="filter-option" @click="manualRemarksSort=''; showManualRemarksSort=false" :class="{ 'option-active': !manualRemarksSort }">No Filter</div>
                         <div class="filter-option" @click="manualRemarksSort='alpha-asc'; showManualRemarksSort=false" :class="{ 'option-active': manualRemarksSort==='alpha-asc' }">A-Z</div>
                         <div class="filter-option" @click="manualRemarksSort='alpha-desc'; showManualRemarksSort=false" :class="{ 'option-active': manualRemarksSort==='alpha-desc' }">Z-A</div>
@@ -742,8 +751,8 @@
                 <thead><tr>
                   <th>#</th>
                   <th style="position:relative">Source of Fund
-                    <button @click.stop="showPoSourceSort = !showPoSourceSort" class="column-filter-btn" :class="{ 'filter-active': poListSourceSort }">⚙</button>
-                    <div v-if="showPoSourceSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'poSource' ? null : 'poSource'" class="column-filter-btn" :class="{ 'filter-active': poListSourceSort }">⚙</button>
+                    <div v-if="activeDropdown === 'poSource'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListSourceSort=''; showPoSourceSort=false" :class="{ 'option-active': !poListSourceSort }">No Filter</div>
                       <div class="filter-option" @click="poListSourceSort='alpha-asc'; showPoSourceSort=false" :class="{ 'option-active': poListSourceSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListSourceSort='alpha-desc'; showPoSourceSort=false" :class="{ 'option-active': poListSourceSort==='alpha-desc' }">Z-A</div>
@@ -752,8 +761,8 @@
                     </div>
                   </th>
                   <th style="position:relative">Work Description
-                    <button @click.stop="showPoWorkDescSort = !showPoWorkDescSort" class="column-filter-btn" :class="{ 'filter-active': poListWorkDescSort }">⚙</button>
-                    <div v-if="showPoWorkDescSort" @click.stop class="column-filter-dropdown" style="min-width: 200px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'poWorkDesc' ? null : 'poWorkDesc'" class="column-filter-btn" :class="{ 'filter-active': poListWorkDescSort }">⚙</button>
+                    <div v-if="activeDropdown === 'poWorkDesc'" @click.stop class="column-filter-dropdown" style="min-width: 200px;">
                       <div class="filter-option" @click="poListWorkDescSort=''; showPoWorkDescSort=false" :class="{ 'option-active': !poListWorkDescSort }">No Filter</div>
                       <div class="filter-option" @click="poListWorkDescSort='alpha-asc'; showPoWorkDescSort=false" :class="{ 'option-active': poListWorkDescSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListWorkDescSort='alpha-desc'; showPoWorkDescSort=false" :class="{ 'option-active': poListWorkDescSort==='alpha-desc' }">Z-A</div>
@@ -762,8 +771,8 @@
                     </div>
                   </th>
                   <th style="position:relative">Supplier
-                    <button @click.stop="showPoSupplierSort = !showPoSupplierSort" class="column-filter-btn" :class="{ 'filter-active': poListSupplierSort }">⚙</button>
-                    <div v-if="showPoSupplierSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'poSupplier' ? null : 'poSupplier'" class="column-filter-btn" :class="{ 'filter-active': poListSupplierSort }">⚙</button>
+                    <div v-if="activeDropdown === 'poSupplier'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListSupplierSort=''; showPoSupplierSort=false" :class="{ 'option-active': !poListSupplierSort }">No Filter</div>
                       <div class="filter-option" @click="poListSupplierSort='alpha-asc'; showPoSupplierSort=false" :class="{ 'option-active': poListSupplierSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListSupplierSort='alpha-desc'; showPoSupplierSort=false" :class="{ 'option-active': poListSupplierSort==='alpha-desc' }">Z-A</div>
@@ -772,8 +781,8 @@
                     </div>
                   </th>
                   <th style="position:relative">P.O. No.
-                    <button @click.stop="showPoPoNoSort = !showPoPoNoSort" class="column-filter-btn" :class="{ 'filter-active': poListPONoSort }">⚙</button>
-                    <div v-if="showPoPoNoSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'poPONo' ? null : 'poPONo'" class="column-filter-btn" :class="{ 'filter-active': poListPONoSort }">⚙</button>
+                    <div v-if="activeDropdown === 'poPONo'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListPONoSort=''; showPoPoNoSort=false" :class="{ 'option-active': !poListPONoSort }">No Filter</div>
                       <div class="filter-option" @click="poListPONoSort='alpha-asc'; showPoPoNoSort=false" :class="{ 'option-active': poListPONoSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListPONoSort='alpha-desc'; showPoPoNoSort=false" :class="{ 'option-active': poListPONoSort==='alpha-desc' }">Z-A</div>
@@ -782,8 +791,8 @@
                     </div>
                   </th>
                   <th style="position:relative">P.R. No.
-                    <button @click.stop="showPoPRNoSort = !showPoPRNoSort" class="column-filter-btn" :class="{ 'filter-active': poListPRNoSort }">⚙</button>
-                    <div v-if="showPoPRNoSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'poPRNo' ? null : 'poPRNo'" class="column-filter-btn" :class="{ 'filter-active': poListPRNoSort }">⚙</button>
+                    <div v-if="activeDropdown === 'poPRNo'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListPRNoSort=''; showPoPRNoSort=false" :class="{ 'option-active': !poListPRNoSort }">No Filter</div>
                       <div class="filter-option" @click="poListPRNoSort='alpha-asc'; showPoPRNoSort=false" :class="{ 'option-active': poListPRNoSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListPRNoSort='alpha-desc'; showPoPRNoSort=false" :class="{ 'option-active': poListPRNoSort==='alpha-desc' }">Z-A</div>
@@ -792,8 +801,8 @@
                     </div>
                   </th>
                   <th style="position:relative">Delivery Completed
-                    <button @click.stop="showPoDeliverySort = !showPoDeliverySort" class="column-filter-btn" :class="{ 'filter-active': poListDeliverySort }">⚙</button>
-                    <div v-if="showPoDeliverySort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'poDelivery' ? null : 'poDelivery'" class="column-filter-btn" :class="{ 'filter-active': poListDeliverySort }">⚙</button>
+                    <div v-if="activeDropdown === 'poDelivery'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListDeliverySort=''; showPoDeliverySort=false" :class="{ 'option-active': !poListDeliverySort }">No Filter</div>
                       <div class="filter-option" @click="poListDeliverySort='alpha-asc'; showPoDeliverySort=false" :class="{ 'option-active': poListDeliverySort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListDeliverySort='alpha-desc'; showPoDeliverySort=false" :class="{ 'option-active': poListDeliverySort==='alpha-desc' }">Z-A</div>
@@ -802,8 +811,8 @@
                     </div>
                   </th>
                   <th style="position:relative">Status
-                    <button @click.stop="showPoStatusSort = !showPoStatusSort" class="column-filter-btn" :class="{ 'filter-active': poListStatusSort }">⚙</button>
-                    <div v-if="showPoStatusSort" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                    <button @click.stop="activeDropdown = activeDropdown === 'poStatus' ? null : 'poStatus'" class="column-filter-btn" :class="{ 'filter-active': poListStatusSort }">⚙</button>
+                    <div v-if="activeDropdown === 'poStatus'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
                       <div class="filter-option" @click="poListStatusSort=''; showPoStatusSort=false" :class="{ 'option-active': !poListStatusSort }">No Filter</div>
                       <div class="filter-option" @click="poListStatusSort='alpha-asc'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='alpha-asc' }">A-Z</div>
                       <div class="filter-option" @click="poListStatusSort='alpha-desc'; showPoStatusSort=false" :class="{ 'option-active': poListStatusSort==='alpha-desc' }">Z-A</div>
@@ -1042,7 +1051,7 @@
             PO: <strong>{{ sendToInvPO?.po_no || '—' }}</strong> &nbsp;|&nbsp; {{ sendToInvPO?.supplier || '' }}
           </div>
           <div class="send-inv-hint">
-            ✏️ Edit any field below. Uncheck items you don't want to add. The <strong>Origin Project Location</strong> is required for each selected item.
+             Edit any field below. Uncheck items you don't want to add. The <strong>Origin Project Location</strong> is required for each selected item.
           </div>
         </div>
 
@@ -1165,6 +1174,7 @@ export default {
       editWithdrawalModal:false, editWithdrawalData:{},
       showArchiveModal:false, archiveYear: new Date().getFullYear()-1, archiving:false,
       today: new Date().toLocaleDateString('en-US',{ year:'numeric', month:'long', day:'numeric' }),
+      activeDropdown: null,
       // PO
       pos:[], poSearch:'',
       showPOForm:false, poEditMode:false, poEditId:null,
@@ -1184,6 +1194,7 @@ export default {
       wQtySort:'', showWQtySort:false,
       wLocationSort:'', showWLocationSort:false,
       wRemarksSort:'', showWRemarksSort:false,
+      wUnitSort:'', showWUnitSort:false,
       poForm:{
         source_of_fund:'', work_description:'', supplier:'',
         pr_no:'', po_no:'', ris_no:'', date_delivered:'',
@@ -1284,6 +1295,7 @@ export default {
       r = applyFilter(r, this.wQtySort, 'quantity_used');
       r = applyFilter(r, this.wLocationSort, 'project_location');
       r = applyFilter(r, this.wRemarksSort, 'remarks');
+      r = applyFilter(r, this.wUnitSort, 'unit');
       return r;
     },
     filteredManualLogs() {
@@ -1904,9 +1916,16 @@ handleOverlayClick(e) {
     this.fetchWithdrawals();
     this.fetchPOs();
     try { this.manualLogs = await getAllManualLogs(); } catch(e) { console.error(e); }
+    // AFTER (fixed)
     setTimeout(()=>{this.showHeader=true;},100);
-  }
-};
+
+    // ADD THIS inside mounted(), before its closing brace
+    document.addEventListener('click', () => {
+      this.activeDropdown = null;
+    });
+
+  }  // ← closes mounted()
+};   // ← closes export default
 </script>
 
 <style scoped>
