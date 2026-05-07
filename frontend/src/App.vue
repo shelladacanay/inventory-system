@@ -238,9 +238,61 @@
             <div class="table-wrapper">
               <table>
                 <thead><tr>
-                  <th>#</th><th>Origin Project Location</th><th>Materials</th>
-                  <th>Unit</th><th>Quantity</th><th>Withdraw</th>
-                  <th>Remaining</th>
+                  <th>#</th>
+                  <th style="position:relative">Origin Project Location
+                    <button @click.stop="activeDropdown = activeDropdown === 'invProject' ? null : 'invProject'" class="column-filter-btn" :class="{ 'filter-active': invProjectSort }">⚙</button>
+                    <div v-if="activeDropdown === 'invProject'" @click.stop class="column-filter-dropdown" style="min-width: 180px;">
+                      <div class="filter-option" @click="invProjectSort=''" :class="{ 'option-active': !invProjectSort }">No Filter</div>
+                      <div class="filter-option" @click="invProjectSort='alpha-asc'" :class="{ 'option-active': invProjectSort==='alpha-asc' }">A-Z</div>
+                      <div class="filter-option" @click="invProjectSort='alpha-desc'" :class="{ 'option-active': invProjectSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniqueInventoryProjects" :key="val" class="filter-option" @click="invProjectSort='val:'+val" :class="{ 'option-active': invProjectSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
+                    </div>
+                  </th>
+                  <th style="position:relative">Materials
+                    <button @click.stop="activeDropdown = activeDropdown === 'invMaterial' ? null : 'invMaterial'" class="column-filter-btn" :class="{ 'filter-active': invMaterialSort }">⚙</button>
+                    <div v-if="activeDropdown === 'invMaterial'" @click.stop class="column-filter-dropdown" style="min-width: 180px;">
+                      <div class="filter-option" @click="invMaterialSort=''" :class="{ 'option-active': !invMaterialSort }">No Filter</div>
+                      <div class="filter-option" @click="invMaterialSort='alpha-asc'" :class="{ 'option-active': invMaterialSort==='alpha-asc' }">A-Z</div>
+                      <div class="filter-option" @click="invMaterialSort='alpha-desc'" :class="{ 'option-active': invMaterialSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniqueMaterials" :key="val" class="filter-option" @click="invMaterialSort='val:'+val" :class="{ 'option-active': invMaterialSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
+                    </div>
+                  </th>
+                  <th style="position:relative">Unit
+                    <button @click.stop="activeDropdown = activeDropdown === 'invUnit' ? null : 'invUnit'" class="column-filter-btn" :class="{ 'filter-active': invUnitSort }">⚙</button>
+                    <div v-if="activeDropdown === 'invUnit'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <div class="filter-option" @click="invUnitSort=''" :class="{ 'option-active': !invUnitSort }">No Filter</div>
+                      <div class="filter-option" @click="invUnitSort='alpha-asc'" :class="{ 'option-active': invUnitSort==='alpha-asc' }">A-Z</div>
+                      <div class="filter-option" @click="invUnitSort='alpha-desc'" :class="{ 'option-active': invUnitSort==='alpha-desc' }">Z-A</div>
+                      <div style="border-top:1px solid #e0e0e0;margin:4px 0;"></div>
+                      <div v-for="val in uniqueInventoryUnits" :key="val" class="filter-option" @click="invUnitSort='val:'+val" :class="{ 'option-active': invUnitSort==='val:'+val }" style="font-size:12px;">{{ val }}</div>
+                    </div>
+                  </th>
+                  <th style="position:relative">Quantity
+                    <button @click.stop="activeDropdown = activeDropdown === 'invQty' ? null : 'invQty'" class="column-filter-btn" :class="{ 'filter-active': invQtySort }">⚙</button>
+                    <div v-if="activeDropdown === 'invQty'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <div class="filter-option" @click="invQtySort=''" :class="{ 'option-active': !invQtySort }">No Filter</div>
+                      <div class="filter-option" @click="invQtySort='num-asc'" :class="{ 'option-active': invQtySort==='num-asc' }">Low to High</div>
+                      <div class="filter-option" @click="invQtySort='num-desc'" :class="{ 'option-active': invQtySort==='num-desc' }">High to Low</div>
+                    </div>
+                  </th>
+                  <th style="position:relative">Withdraw
+                    <button @click.stop="activeDropdown = activeDropdown === 'invWithdraw' ? null : 'invWithdraw'" class="column-filter-btn" :class="{ 'filter-active': invWithdrawSort }">⚙</button>
+                    <div v-if="activeDropdown === 'invWithdraw'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <div class="filter-option" @click="invWithdrawSort=''" :class="{ 'option-active': !invWithdrawSort }">No Filter</div>
+                      <div class="filter-option" @click="invWithdrawSort='num-asc'" :class="{ 'option-active': invWithdrawSort==='num-asc' }">Low to High</div>
+                      <div class="filter-option" @click="invWithdrawSort='num-desc'" :class="{ 'option-active': invWithdrawSort==='num-desc' }">High to Low</div>
+                    </div>
+                  </th>
+                  <th style="position:relative">Remaining
+                    <button @click.stop="activeDropdown = activeDropdown === 'invRemaining' ? null : 'invRemaining'" class="column-filter-btn" :class="{ 'filter-active': invRemainingSort }">⚙</button>
+                    <div v-if="activeDropdown === 'invRemaining'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <div class="filter-option" @click="invRemainingSort=''" :class="{ 'option-active': !invRemainingSort }">No Filter</div>
+                      <div class="filter-option" @click="invRemainingSort='num-asc'" :class="{ 'option-active': invRemainingSort==='num-asc' }">Low to High</div>
+                      <div class="filter-option" @click="invRemainingSort='num-desc'" :class="{ 'option-active': invRemainingSort==='num-desc' }">High to Low</div>
+                    </div>
+                  </th>
                   <th style="position:relative">Remarks
                     <button @click.stop="activeDropdown = activeDropdown === 'invRemarks' ? null : 'invRemarks'" class="column-filter-btn" :class="{ 'filter-active': remarksSortOption }">⚙</button>
                     <div v-if="activeDropdown === 'invRemarks'" @click.stop class="column-filter-dropdown" style="min-width: 180px;">
@@ -251,7 +303,14 @@
                       <div v-for="opt in remarksSortOptions.slice(3)" :key="opt.value" class="filter-option" @click="remarksSortOption=opt.value; showRemarksDropdown=false" :class="{ 'option-active': remarksSortOption===opt.value }">{{ opt.label }}</div>
                     </div>
                   </th>
-                  <th>Date Added</th><th>Actions</th>
+                  <th style="position:relative">Date Added
+                    <button @click.stop="activeDropdown = activeDropdown === 'invDate' ? null : 'invDate'" class="column-filter-btn" :class="{ 'filter-active': invDateSort }">⚙</button>
+                    <div v-if="activeDropdown === 'invDate'" @click.stop class="column-filter-dropdown" style="min-width: 160px;">
+                      <div class="filter-option" @click="invDateSort=''" :class="{ 'option-active': !invDateSort }">No Filter</div>
+                      <div class="filter-option" @click="invDateSort='date-asc'" :class="{ 'option-active': invDateSort==='date-asc' }">Oldest First</div>
+                      <div class="filter-option" @click="invDateSort='date-desc'" :class="{ 'option-active': invDateSort==='date-desc' }">Newest First</div>
+                    </div>
+                  </th><th>Actions</th>
                 </tr></thead>
                 <tbody>
                   <tr v-for="(item,index) in filteredItems" :key="item.id" :class="rowClass(item)">
@@ -1148,6 +1207,7 @@ export default {
       activeTab:'inventory', showHeader:false, loading:false, formMode:'single',
       items:[], withdrawals:[],
       search:'', dateFrom:'', dateTo:'', selectedMaterial:'', selectedPeriod:'', cardFilter:'all', projectLocationSearch:'', remarksSortOption:'', showRemarksDropdown:false,
+      invProjectSort:'', invMaterialSort:'', invUnitSort:'', invQtySort:'', invWithdrawSort:'', invRemainingSort:'', invDateSort:'',
       wDateFrom:'', wDateTo:'', wSelectedMaterial:'', wSelectedPeriod:'', wSearch:'', wProjectSearch:'', wInnerTab:'inventory',
       manualLogs:[], manualSearch:'', manualDateFrom:'', manualDateTo:'',
       manualForm:{ log_date:'', control_no:'', material:'', unit:'', incharge:'', origin_project:'', qty:0, project_location:'', remarks:'' },
@@ -1253,6 +1313,24 @@ export default {
       }
       if (this.dateFrom) r=r.filter(i=>{if(!i.created_at)return true;return this.toLocalDate(i.created_at)>=this.dateFrom;});
       if (this.dateTo) r=r.filter(i=>{if(!i.created_at)return true;return this.toLocalDate(i.created_at)<=this.dateTo;});
+      const applyInvFilter = (arr, sort, field, type='alpha') => {
+        if (!sort) return arr;
+        if (sort === 'alpha-asc') return [...arr].sort((a,b) => (a[field]||'').localeCompare(b[field]||''));
+        if (sort === 'alpha-desc') return [...arr].sort((a,b) => (b[field]||'').localeCompare(a[field]||''));
+        if (sort === 'num-asc') return [...arr].sort((a,b) => (a[field]||0) - (b[field]||0));
+        if (sort === 'num-desc') return [...arr].sort((a,b) => (b[field]||0) - (a[field]||0));
+        if (sort === 'date-asc') return [...arr].sort((a,b) => (a[field]||0) - (b[field]||0));
+        if (sort === 'date-desc') return [...arr].sort((a,b) => (b[field]||0) - (a[field]||0));
+        if (sort.startsWith('val:')) return arr.filter(i => (i[field]||'') === sort.slice(4));
+        return arr;
+      };
+      r = applyInvFilter(r, this.invProjectSort, 'project');
+      r = applyInvFilter(r, this.invMaterialSort, 'material');
+      r = applyInvFilter(r, this.invUnitSort, 'unit');
+      r = applyInvFilter(r, this.invQtySort, 'quantity', 'num');
+      r = applyInvFilter(r, this.invWithdrawSort, 'withdraw_qty', 'num');
+      r = applyInvFilter(r, this.invRemainingSort, 'remaining', 'num');
+      r = applyInvFilter(r, this.invDateSort, 'created_at', 'date');
       return r;
     },
     filteredWithdrawals() {
