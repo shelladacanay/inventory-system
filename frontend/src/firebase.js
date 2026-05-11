@@ -209,9 +209,26 @@ export async function getAllManualLogs() {
     const snapshot = await get(ref(db, 'manual_logs'));
     const logs = [];
     if (snapshot.exists()) {
-      snapshot.forEach(child => logs.push({ id: child.key, ...child.val() }));
+      const value = snapshot.val();
+      if (value && typeof value === 'object') {
+        const entries = Object.entries(value);
+        const isRecord = (obj) => obj && typeof obj === 'object' && ('material' in obj || 'log_date' in obj || 'created_at' in obj);
+        if (entries.length === 1 && typeof entries[0][1] === 'object' && !isRecord(entries[0][1])) {
+          Object.entries(entries[0][1]).forEach(([id, child]) => {
+            logs.push({ id, ...child });
+          });
+        } else {
+          entries.forEach(([id, child]) => {
+            logs.push({ id, ...child });
+          });
+        }
+      }
     }
-    return logs.sort((a, b) => (b.log_date || 0) - (a.log_date || 0));
+    return logs.sort((a, b) => {
+      const aDate = a.log_date ? new Date(a.log_date) : new Date(a.created_at || 0);
+      const bDate = b.log_date ? new Date(b.log_date) : new Date(b.created_at || 0);
+      return bDate - aDate;
+    });
   } catch (e) { console.error(e); return []; }
 }
 

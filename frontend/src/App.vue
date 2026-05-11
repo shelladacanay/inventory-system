@@ -89,17 +89,17 @@
                 <div class="form-field" style="position:relative">
                   <label class="field-label">Project Location :</label>
                   <input v-model="form.project" placeholder="Enter project or location"
-                    @input="showProjectSug=true" @blur="hideProjectSug" autocomplete="off"/>
+                    @input="showProjectSug=true; projectActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'project')" @keydown.up.prevent="handleManualSuggestionKey($event,'project')" @keydown.enter.prevent="handleManualSuggestionKey($event,'project')" @keydown.esc.prevent="hideProjectSug" @blur="hideProjectSug" autocomplete="off"/>
                   <div v-if="showProjectSug && projectSuggestions.length" class="suggestions-box">
-                    <div v-for="p in projectSuggestions" :key="p" class="suggestion-item" @mousedown.prevent="pickProject(p)">{{ p }}</div>
+                    <div v-for="(p, idx) in projectSuggestions" :key="p" class="suggestion-item" :class="{ active: projectActiveIndex===idx }" @mousedown.prevent="pickProject(p)">{{ p }}</div>
                   </div>
                 </div>
                 <div class="form-field" style="position:relative">
                   <label class="field-label">Materials :</label>
                   <input v-model="form.material" placeholder="Enter material name"
-                    @input="showMaterialSug=true" @blur="hideMaterialSug" autocomplete="off"/>
+                    @input="showMaterialSug=true; materialActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'material')" @keydown.up.prevent="handleManualSuggestionKey($event,'material')" @keydown.enter.prevent="handleManualSuggestionKey($event,'material')" @keydown.esc.prevent="hideMaterialSug" @blur="hideMaterialSug" autocomplete="off"/>
                   <div v-if="showMaterialSug && materialSuggestions.length" class="suggestions-box">
-                    <div v-for="m in materialSuggestions" :key="m" class="suggestion-item" @mousedown.prevent="pickMaterial(m)">{{ m }}</div>
+                    <div v-for="(m, idx) in materialSuggestions" :key="m" class="suggestion-item" :class="{ active: materialActiveIndex===idx }" @mousedown.prevent="pickMaterial(m)">{{ m }}</div>
                   </div>
                 </div>
                 <div class="form-field">
@@ -143,19 +143,21 @@
                       <td class="row-num">{{ index+1 }}</td>
                       <td style="position:relative">
                         <input v-model="row.project" placeholder="Project location"
-                          @input="activeBulkRow=index;showBulkProjectSug=true"
+                          @input="activeBulkRow=index;showBulkProjectSug=true; bulkProjectActiveIndex[index]=0"
+                          @keydown.down.prevent="handleBulkSuggestionKey($event,'project',index)" @keydown.up.prevent="handleBulkSuggestionKey($event,'project',index)" @keydown.enter.prevent="handleBulkSuggestionKey($event,'project',index)" @keydown.esc.prevent="hideBulkProjectSug"
                           @blur="hideBulkProjectSug" autocomplete="off" class="bulk-input"/>
                         <div v-if="showBulkProjectSug&&activeBulkRow===index&&bulkProjectSuggestions(row.project).length" class="suggestions-box">
-                          <div v-for="p in bulkProjectSuggestions(row.project)" :key="p" class="suggestion-item"
+                          <div v-for="(p, idx) in bulkProjectSuggestions(row.project)" :key="p" class="suggestion-item" :class="{ active: bulkProjectActiveIndex[index]===idx }"
                             @mousedown.prevent="row.project=p;showBulkProjectSug=false">{{ p }}</div>
                         </div>
                       </td>
                       <td style="position:relative">
                         <input v-model="row.material" placeholder="Material name"
-                          @input="activeBulkRow=index;showBulkMaterialSug=true"
+                          @input="activeBulkRow=index;showBulkMaterialSug=true; bulkMaterialActiveIndex[index]=0"
+                          @keydown.down.prevent="handleBulkSuggestionKey($event,'material',index)" @keydown.up.prevent="handleBulkSuggestionKey($event,'material',index)" @keydown.enter.prevent="handleBulkSuggestionKey($event,'material',index)" @keydown.esc.prevent="hideBulkMaterialSug"
                           @blur="hideBulkMaterialSug" autocomplete="off" class="bulk-input"/>
                         <div v-if="showBulkMaterialSug&&activeBulkRow===index&&bulkMaterialSuggestions(row.material).length" class="suggestions-box">
-                          <div v-for="m in bulkMaterialSuggestions(row.material)" :key="m" class="suggestion-item"
+                          <div v-for="(m, idx) in bulkMaterialSuggestions(row.material)" :key="m" class="suggestion-item" :class="{ active: bulkMaterialActiveIndex[index]===idx }"
                             @mousedown.prevent="row.material=m;showBulkMaterialSug=false">{{ m }}</div>
                         </div>
                       </td>
@@ -489,13 +491,13 @@
                 <h2 class="form-title">{{ manualEditMode ? 'Edit Manual Entry' : 'Add Manual Entry' }}</h2>
                 <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
                   <div class="form-field"><label class="field-label">Date :</label><input type="date" v-model="manualForm.log_date"/></div>
-                  <div class="form-field"><label class="field-label">Control # :</label><input v-model="manualForm.control_no" placeholder="e.g. RIS-101-26-03-001"/></div>
-                  <div class="form-field" style="position:relative"><label class="field-label">Material :</label><input v-model="manualForm.material" placeholder="Material name" @input="showManualMaterialSug=true" @blur="hideManualMaterialSug" autocomplete="off"/><div v-if="showManualMaterialSug && manualMaterialSuggestions.length" class="suggestions-box"><div v-for="m in manualMaterialSuggestions" :key="m" class="suggestion-item" @mousedown.prevent="pickManualMaterial(m)">{{ m }}</div></div></div>
-                  <div class="form-field" style="position:relative"><label class="field-label">In-charge :</label><input v-model="manualForm.incharge" placeholder="Person in-charge" @input="showManualInchargeSug=true" @blur="hideManualInchargeSug" autocomplete="off"/><div v-if="showManualInchargeSug && manualInchargeSuggestions.length" class="suggestions-box"><div v-for="i in manualInchargeSuggestions" :key="i" class="suggestion-item" @mousedown.prevent="pickManualIncharge(i)">{{ i }}</div></div></div>
-                  <div class="form-field" style="position:relative"><label class="field-label">Origin Project Location :</label><input v-model="manualForm.origin_project" placeholder="Origin location" @input="showManualOriginSug=true" @blur="hideManualOriginSug" autocomplete="off"/><div v-if="showManualOriginSug && manualOriginSuggestions.length" class="suggestions-box"><div v-for="o in manualOriginSuggestions" :key="o" class="suggestion-item" @mousedown.prevent="pickManualOrigin(o)">{{ o }}</div></div></div>
+                  <div class="form-field" style="position:relative"><label class="field-label">Control # :</label><input v-model="manualForm.control_no" placeholder="e.g. RIS-101-26-03-001" @input="showManualControlSug=true; manualControlActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'manualControl')" @keydown.up.prevent="handleManualSuggestionKey($event,'manualControl')" @keydown.enter.prevent="handleManualSuggestionKey($event,'manualControl')" @keydown.esc.prevent="hideManualControlSug" @blur="hideManualControlSug" autocomplete="off"/><div v-if="showManualControlSug && manualControlSuggestions.length" class="suggestions-box"><div v-for="(c,idx) in manualControlSuggestions" :key="c" class="suggestion-item" :class="{ active: manualControlActiveIndex===idx }" @mousedown.prevent="pickManualControl(c)">{{ c }}</div></div></div>
+                  <div class="form-field" style="position:relative"><label class="field-label">Material :</label><input v-model="manualForm.material" placeholder="Material name" @input="showManualMaterialSug=true; manualMaterialActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'manualMaterial')" @keydown.up.prevent="handleManualSuggestionKey($event,'manualMaterial')" @keydown.enter.prevent="handleManualSuggestionKey($event,'manualMaterial')" @keydown.esc.prevent="hideManualMaterialSug" @blur="hideManualMaterialSug" autocomplete="off"/><div v-if="showManualMaterialSug && manualMaterialSuggestions.length" class="suggestions-box"><div v-for="(m,idx) in manualMaterialSuggestions" :key="m" class="suggestion-item" :class="{ active: manualMaterialActiveIndex===idx }" @mousedown.prevent="pickManualMaterial(m)">{{ m }}</div></div></div>
+                  <div class="form-field" style="position:relative"><label class="field-label">In-charge :</label><input v-model="manualForm.incharge" placeholder="Person in-charge" @input="showManualInchargeSug=true; manualInchargeActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'manualIncharge')" @keydown.up.prevent="handleManualSuggestionKey($event,'manualIncharge')" @keydown.enter.prevent="handleManualSuggestionKey($event,'manualIncharge')" @keydown.esc.prevent="hideManualInchargeSug" @blur="hideManualInchargeSug" autocomplete="off"/><div v-if="showManualInchargeSug && manualInchargeSuggestions.length" class="suggestions-box"><div v-for="(i,idx) in manualInchargeSuggestions" :key="i" class="suggestion-item" :class="{ active: manualInchargeActiveIndex===idx }" @mousedown.prevent="pickManualIncharge(i)">{{ i }}</div></div></div>
+                  <div class="form-field" style="position:relative"><label class="field-label">Origin Project Location :</label><input v-model="manualForm.origin_project" placeholder="Origin location" @input="showManualOriginSug=true; manualOriginActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'manualOrigin')" @keydown.up.prevent="handleManualSuggestionKey($event,'manualOrigin')" @keydown.enter.prevent="handleManualSuggestionKey($event,'manualOrigin')" @keydown.esc.prevent="hideManualOriginSug" @blur="hideManualOriginSug" autocomplete="off"/><div v-if="showManualOriginSug && manualOriginSuggestions.length" class="suggestions-box"><div v-for="(o,idx) in manualOriginSuggestions" :key="o" class="suggestion-item" :class="{ active: manualOriginActiveIndex===idx }" @mousedown.prevent="pickManualOrigin(o)">{{ o }}</div></div></div>
                   <div class="form-field"><label class="field-label">Qty :</label><input type="number" v-model.number="manualForm.qty" min="0" placeholder="0"/></div>
-                  <div class="form-field"><label class="field-label">Unit :</label><select v-model="manualForm.unit" class="select-input"><option value="">-- Select Unit --</option><option v-for="u in allUnitOptions" :key="u" :value="u">{{ u }}</option></select></div>
-                  <div class="form-field" style="position:relative"><label class="field-label">Project Location :</label><input v-model="manualForm.project_location" placeholder="Project location" @input="showManualLocationSug=true" @blur="hideManualLocationSug" autocomplete="off"/><div v-if="showManualLocationSug && manualLocationSuggestions.length" class="suggestions-box"><div v-for="l in manualLocationSuggestions" :key="l" class="suggestion-item" @mousedown.prevent="pickManualLocation(l)">{{ l }}</div></div></div>
+                  <div class="form-field" style="position:relative"><label class="field-label">Unit :</label><input v-model="manualForm.unit" placeholder="Unit" @input="showManualUnitSug=true; manualUnitActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'manualUnit')" @keydown.up.prevent="handleManualSuggestionKey($event,'manualUnit')" @keydown.enter.prevent="handleManualSuggestionKey($event,'manualUnit')" @keydown.esc.prevent="hideManualUnitSug" @blur="hideManualUnitSug" autocomplete="off"/><div v-if="showManualUnitSug && manualUnitSuggestions.length" class="suggestions-box"><div v-for="(u,idx) in manualUnitSuggestions" :key="u" class="suggestion-item" :class="{ active: manualUnitActiveIndex===idx }" @mousedown.prevent="pickManualUnit(u)">{{ u }}</div></div></div>
+                  <div class="form-field" style="position:relative"><label class="field-label">Project Location :</label><input v-model="manualForm.project_location" placeholder="Project location" @input="showManualLocationSug=true; manualLocationActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'manualLocation')" @keydown.up.prevent="handleManualSuggestionKey($event,'manualLocation')" @keydown.enter.prevent="handleManualSuggestionKey($event,'manualLocation')" @keydown.esc.prevent="hideManualLocationSug" @blur="hideManualLocationSug" autocomplete="off"/><div v-if="showManualLocationSug && manualLocationSuggestions.length" class="suggestions-box"><div v-for="(l,idx) in manualLocationSuggestions" :key="l" class="suggestion-item" :class="{ active: manualLocationActiveIndex===idx }" @mousedown.prevent="pickManualLocation(l)">{{ l }}</div></div></div>
                   <div class="form-field"><label class="field-label">Remarks :</label><input v-model="manualForm.remarks" placeholder="Optional notes"/></div>
                 </div>
                 <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
@@ -644,9 +646,10 @@
                 <div class="form-field" style="position:relative">
                   <label class="field-label">Source of Fund :</label>
                   <input v-model="poForm.source_of_fund" placeholder="e.g. General Fund" autocomplete="off"
-                    @focus="poSuggestField='source_of_fund'" @blur="hidePOSug" @input="poSuggestField='source_of_fund'"/>
+                    @focus="poSuggestField='source_of_fund'; poSuggestActiveIndex=0" @blur="hidePOSug" @input="poSuggestField='source_of_fund'; poSuggestActiveIndex=0"
+                    @keydown.down.prevent="handlePOSuggestionKey($event)" @keydown.up.prevent="handlePOSuggestionKey($event)" @keydown.enter.prevent="handlePOSuggestionKey($event)" @keydown.esc.prevent="hidePOSug" />
                   <div v-if="poSuggestField==='source_of_fund' && poSuggest('source_of_fund', poForm.source_of_fund).length" class="suggestions-box">
-                    <div v-for="s in poSuggest('source_of_fund', poForm.source_of_fund)" :key="s" class="suggestion-item"
+                    <div v-for="(s, idx) in poSuggest('source_of_fund', poForm.source_of_fund)" :key="s" class="suggestion-item" :class="{ active: poSuggestActiveIndex===idx }"
                       @mousedown.prevent="poForm.source_of_fund=s;poSuggestField=''">{{ s }}</div>
                   </div>
                 </div>
@@ -654,9 +657,10 @@
                 <div class="form-field" style="position:relative">
                   <label class="field-label">Work Description :</label>
                   <input v-model="poForm.work_description" placeholder="e.g. Facade, Main Gate" autocomplete="off"
-                    @focus="poSuggestField='work_description'" @blur="hidePOSug" @input="poSuggestField='work_description'"/>
+                    @focus="poSuggestField='work_description'; poSuggestActiveIndex=0" @blur="hidePOSug" @input="poSuggestField='work_description'; poSuggestActiveIndex=0"
+                    @keydown.down.prevent="handlePOSuggestionKey($event)" @keydown.up.prevent="handlePOSuggestionKey($event)" @keydown.enter.prevent="handlePOSuggestionKey($event)" @keydown.esc.prevent="hidePOSug" />
                   <div v-if="poSuggestField==='work_description' && poSuggest('work_description', poForm.work_description).length" class="suggestions-box">
-                    <div v-for="s in poSuggest('work_description', poForm.work_description)" :key="s" class="suggestion-item"
+                    <div v-for="(s, idx) in poSuggest('work_description', poForm.work_description)" :key="s" class="suggestion-item" :class="{ active: poSuggestActiveIndex===idx }"
                       @mousedown.prevent="poForm.work_description=s;poSuggestField=''">{{ s }}</div>
                   </div>
                 </div>
@@ -664,9 +668,10 @@
                 <div class="form-field" style="position:relative">
                   <label class="field-label">Supplier :</label>
                   <input v-model="poForm.supplier" placeholder="Supplier name" autocomplete="off"
-                    @focus="poSuggestField='supplier'" @blur="hidePOSug" @input="poSuggestField='supplier'"/>
+                    @focus="poSuggestField='supplier'; poSuggestActiveIndex=0" @blur="hidePOSug" @input="poSuggestField='supplier'; poSuggestActiveIndex=0"
+                    @keydown.down.prevent="handlePOSuggestionKey($event)" @keydown.up.prevent="handlePOSuggestionKey($event)" @keydown.enter.prevent="handlePOSuggestionKey($event)" @keydown.esc.prevent="hidePOSug" />
                   <div v-if="poSuggestField==='supplier' && poSuggest('supplier', poForm.supplier).length" class="suggestions-box">
-                    <div v-for="s in poSuggest('supplier', poForm.supplier)" :key="s" class="suggestion-item"
+                    <div v-for="(s, idx) in poSuggest('supplier', poForm.supplier)" :key="s" class="suggestion-item" :class="{ active: poSuggestActiveIndex===idx }"
                       @mousedown.prevent="poForm.supplier=s;poSuggestField=''">{{ s }}</div>
                   </div>
                 </div>
@@ -674,9 +679,10 @@
                 <div class="form-field" style="position:relative">
                   <label class="field-label">P.R. No. :</label>
                   <input v-model="poForm.pr_no" placeholder="e.g. RAF-101-25-03-101" autocomplete="off"
-                    @focus="poSuggestField='pr_no'" @blur="hidePOSug" @input="poSuggestField='pr_no'"/>
+                    @focus="poSuggestField='pr_no'; poSuggestActiveIndex=0" @blur="hidePOSug" @input="poSuggestField='pr_no'; poSuggestActiveIndex=0"
+                    @keydown.down.prevent="handlePOSuggestionKey($event)" @keydown.up.prevent="handlePOSuggestionKey($event)" @keydown.enter.prevent="handlePOSuggestionKey($event)" @keydown.esc.prevent="hidePOSug" />
                   <div v-if="poSuggestField==='pr_no' && poSuggest('pr_no', poForm.pr_no).length" class="suggestions-box">
-                    <div v-for="s in poSuggest('pr_no', poForm.pr_no)" :key="s" class="suggestion-item"
+                    <div v-for="(s, idx) in poSuggest('pr_no', poForm.pr_no)" :key="s" class="suggestion-item" :class="{ active: poSuggestActiveIndex===idx }"
                       @mousedown.prevent="poForm.pr_no=s;poSuggestField=''">{{ s }}</div>
                   </div>
                 </div>
@@ -684,9 +690,10 @@
                 <div class="form-field" style="position:relative">
                   <label class="field-label">P.O. No. :</label>
                   <input v-model="poForm.po_no" placeholder="e.g. RAF-101-25-04-117" autocomplete="off"
-                    @focus="poSuggestField='po_no'" @blur="hidePOSug" @input="poSuggestField='po_no'"/>
+                    @focus="poSuggestField='po_no'; poSuggestActiveIndex=0" @blur="hidePOSug" @input="poSuggestField='po_no'; poSuggestActiveIndex=0"
+                    @keydown.down.prevent="handlePOSuggestionKey($event)" @keydown.up.prevent="handlePOSuggestionKey($event)" @keydown.enter.prevent="handlePOSuggestionKey($event)" @keydown.esc.prevent="hidePOSug" />
                   <div v-if="poSuggestField==='po_no' && poSuggest('po_no', poForm.po_no).length" class="suggestions-box">
-                    <div v-for="s in poSuggest('po_no', poForm.po_no)" :key="s" class="suggestion-item"
+                    <div v-for="(s, idx) in poSuggest('po_no', poForm.po_no)" :key="s" class="suggestion-item" :class="{ active: poSuggestActiveIndex===idx }"
                       @mousedown.prevent="poForm.po_no=s;poSuggestField=''">{{ s }}</div>
                   </div>
                 </div>
@@ -694,9 +701,10 @@
                 <div class="form-field" style="position:relative">
                   <label class="field-label">RIS No. :</label>
                   <input v-model="poForm.ris_no" placeholder="e.g. RIS-101-25-04-001" autocomplete="off"
-                    @focus="poSuggestField='ris_no'" @blur="hidePOSug" @input="poSuggestField='ris_no'"/>
+                    @focus="poSuggestField='ris_no'; poSuggestActiveIndex=0" @blur="hidePOSug" @input="poSuggestField='ris_no'; poSuggestActiveIndex=0"
+                    @keydown.down.prevent="handlePOSuggestionKey($event)" @keydown.up.prevent="handlePOSuggestionKey($event)" @keydown.enter.prevent="handlePOSuggestionKey($event)" @keydown.esc.prevent="hidePOSug" />
                   <div v-if="poSuggestField==='ris_no' && poSuggest('ris_no', poForm.ris_no).length" class="suggestions-box">
-                    <div v-for="s in poSuggest('ris_no', poForm.ris_no)" :key="s" class="suggestion-item"
+                    <div v-for="(s, idx) in poSuggest('ris_no', poForm.ris_no)" :key="s" class="suggestion-item" :class="{ active: poSuggestActiveIndex===idx }"
                       @mousedown.prevent="poForm.ris_no=s;poSuggestField=''">{{ s }}</div>
                   </div>
                 </div>
@@ -749,9 +757,10 @@
                       <td style="position:relative">
                         <input v-model="row.description" placeholder="Description" class="bulk-input" :title="row.description" style="min-width:190px"
                           autocomplete="off"
-                          @focus="poSuggestField='desc_'+index" @blur="hidePOSug" @input="poSuggestField='desc_'+index"/>
+                          @focus="poSuggestField='desc_'+index; poSuggestActiveIndex=0" @blur="hidePOSug" @input="poSuggestField='desc_'+index; poSuggestActiveIndex=0"
+                          @keydown.down.prevent="handlePOSuggestionKey($event)" @keydown.up.prevent="handlePOSuggestionKey($event)" @keydown.enter.prevent="handlePOSuggestionKey($event)" @keydown.esc.prevent="hidePOSug"/>
                         <div v-if="poSuggestField==='desc_'+index && poSuggest('description', row.description).length" class="suggestions-box" style="z-index:300">
-                          <div v-for="s in poSuggest('description', row.description)" :key="s" class="suggestion-item"
+                          <div v-for="(s, idx) in poSuggest('description', row.description)" :key="s" class="suggestion-item" :class="{ active: poSuggestActiveIndex===idx }"
                             @mousedown.prevent="row.description=s;poSuggestField=''">{{ s }}</div>
                         </div>
                       </td>
@@ -1212,7 +1221,11 @@ export default {
       manualLogs:[], manualSearch:'', manualDateFrom:'', manualDateTo:'',
       manualForm:{ log_date:'', control_no:'', material:'', unit:'', incharge:'', origin_project:'', qty:0, project_location:'', remarks:'' },
       manualSaving:false, manualEditMode:false, manualEditId:null,
-      showManualMaterialSug:false, showManualInchargeSug:false, showManualOriginSug:false, showManualLocationSug:false,
+      showManualMaterialSug:false, showManualInchargeSug:false, showManualOriginSug:false, showManualLocationSug:false, showManualControlSug:false, showManualUnitSug:false,
+      manualControlActiveIndex:-1, manualMaterialActiveIndex:-1, manualInchargeActiveIndex:-1, manualOriginActiveIndex:-1, manualLocationActiveIndex:-1, manualUnitActiveIndex:-1,
+      projectActiveIndex:-1, materialActiveIndex:-1,
+      bulkProjectActiveIndex:[], bulkMaterialActiveIndex:[],
+      poSuggestActiveIndex:-1,
       manualDateSort:'', showManualDateSort:false,
       manualControlSort:'', showManualControlSort:false,
       manualMaterialSort:'', showManualMaterialSort:false,
@@ -1534,10 +1547,10 @@ export default {
     uniqueWithdrawalLocations(){ return [...new Set(this.withdrawals.map(w=>w.project_location).filter(Boolean))].sort(); },
     uniqueWithdrawalRemarks(){ return [...new Set(this.withdrawals.map(w=>w.remarks).filter(Boolean))].sort(); },
     uniqueWithdrawalUnits(){ return [...new Set(this.withdrawals.map(w=>w.unit).filter(Boolean))].sort(); },
-    uniqueManualControlNos(){ return [...new Set(this.manualLogs.map(l=>l.control_no).filter(Boolean))].sort(); },
-    uniqueManualUnits(){ return [...new Set(this.manualLogs.map(l=>l.unit).filter(Boolean))].sort(); },
-    uniqueManualOrigins(){ return [...new Set(this.manualLogs.map(l=>l.origin_project).filter(Boolean))].sort(); },
-    uniqueManualProjectLocations(){ return [...new Set(this.manualLogs.map(l=>l.project_location).filter(Boolean))].sort(); },
+    uniqueManualControlNos(){ return [...new Set([...this.manualLogs.map(l=>l.control_no), ...this.withdrawals.map(w=>w.control_no)].filter(Boolean))].sort(); },
+    uniqueManualUnits(){ return [...new Set([...this.allUnitOptions, ...this.manualLogs.map(l=>l.unit)].filter(Boolean))].sort(); },
+    uniqueManualOrigins(){ return [...new Set([...this.manualLogs.map(l=>l.origin_project), ...this.items.map(i=>i.project)].filter(Boolean))].sort(); },
+    uniqueManualProjectLocations(){ return [...new Set([...this.manualLogs.map(l=>l.project_location), ...this.withdrawals.map(w=>w.project_location), ...this.items.map(i=>i.project)].filter(Boolean))].sort(); },
     uniqueManualRemarksValues(){ return [...new Set(this.manualLogs.map(l=>l.remarks).filter(Boolean))].sort(); },
     uniqueProjects(){ return [...new Set(this.items.map(i=>i.project).filter(Boolean))].sort(); },
     uniqueRemarks(){ return [...new Set(this.items.map(i=> (i.remarks||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); },
@@ -1553,14 +1566,16 @@ export default {
     materialSuggestions(){ if(!this.form.material)return this.uniqueMaterials; return this.uniqueMaterials.filter(m=>m.toLowerCase().includes(this.form.material.toLowerCase())); },
     projectSuggestions(){ if(!this.form.project)return this.uniqueProjects; return this.uniqueProjects.filter(p=>p.toLowerCase().includes(this.form.project.toLowerCase())); },
     allUnitOptions(){ return['PCS','BAG','BOX','GAL','LTR','KG','ROLL','SET','SHEET','MTR','PAIR','CAN','BOTTLE','DRUM','BUNDLE','LENGTH','CU.M','METER','KILO','PIECE','GALLON']; },
-    uniqueManualMaterials(){ return [...new Set(this.manualLogs.map(l=>l.material).filter(Boolean))].sort(); },
-    uniqueManualIncharge(){ return [...new Set(this.manualLogs.map(l=>l.incharge).filter(Boolean))].sort(); },
-    uniqueManualOrigin(){ return [...new Set(this.manualLogs.map(l=>l.origin_project).filter(Boolean))].sort(); },
-    uniqueManualLocations(){ return [...new Set(this.manualLogs.map(l=>l.project_location).filter(Boolean))].sort(); },
-    manualMaterialSuggestions(){ if(!this.manualForm.material)return this.uniqueManualMaterials; return this.uniqueManualMaterials.filter(m=>m.toLowerCase().includes(this.manualForm.material.toLowerCase())); },
-    manualInchargeSuggestions(){ if(!this.manualForm.incharge)return this.uniqueManualIncharge; return this.uniqueManualIncharge.filter(i=>i.toLowerCase().includes(this.manualForm.incharge.toLowerCase())); },
-    manualOriginSuggestions(){ if(!this.manualForm.origin_project)return this.uniqueManualOrigin; return this.uniqueManualOrigin.filter(o=>o.toLowerCase().includes(this.manualForm.origin_project.toLowerCase())); },
-    manualLocationSuggestions(){ if(!this.manualForm.project_location)return this.uniqueManualLocations; return this.uniqueManualLocations.filter(l=>l.toLowerCase().includes(this.manualForm.project_location.toLowerCase())); },
+    uniqueManualMaterials(){ return [...new Set([...this.manualLogs.map(l=>l.material), ...this.items.map(i=>i.material), ...this.withdrawals.map(w=>w.material)].filter(Boolean))].sort(); },
+    uniqueManualIncharge(){ return [...new Set([...this.manualLogs.map(l=>l.incharge), ...this.withdrawals.map(w=>w.incharge)].filter(Boolean))].sort(); },
+    uniqueManualOrigin(){ return [...new Set([...this.manualLogs.map(l=>l.origin_project), ...this.items.map(i=>i.project)].filter(Boolean))].sort(); },
+    uniqueManualLocations(){ return [...new Set([...this.manualLogs.map(l=>l.project_location), ...this.withdrawals.map(w=>w.project_location), ...this.items.map(i=>i.project)].filter(Boolean))].sort(); },
+    manualControlSuggestions(){ if(!this.manualForm.control_no) return this.uniqueManualControlNos; const s=this.manualForm.control_no.toLowerCase(); return this.uniqueManualControlNos.filter(c=>c.toLowerCase().includes(s)); },
+    manualMaterialSuggestions(){ if(!this.manualForm.material)return this.uniqueManualMaterials; const s=this.manualForm.material.toLowerCase(); return this.uniqueManualMaterials.filter(m=>m.toLowerCase().includes(s)); },
+    manualInchargeSuggestions(){ if(!this.manualForm.incharge)return this.uniqueManualIncharge; const s=this.manualForm.incharge.toLowerCase(); return this.uniqueManualIncharge.filter(i=>i.toLowerCase().includes(s)); },
+    manualOriginSuggestions(){ if(!this.manualForm.origin_project)return this.uniqueManualOrigin; const s=this.manualForm.origin_project.toLowerCase(); return this.uniqueManualOrigin.filter(o=>o.toLowerCase().includes(s)); },
+    manualLocationSuggestions(){ if(!this.manualForm.project_location)return this.uniqueManualLocations; const s=this.manualForm.project_location.toLowerCase(); return this.uniqueManualLocations.filter(l=>l.toLowerCase().includes(s)); },
+    manualUnitSuggestions(){ const units=[...new Set([...this.allUnitOptions, ...this.manualLogs.map(l=>l.unit)].filter(Boolean))].sort(); if(!this.manualForm.unit) return units; const s=this.manualForm.unit.toLowerCase(); return units.filter(u=>u.toLowerCase().includes(s)); },
     uniquePODescriptions() {
       const descs = new Set((this.selectedPO.items || []).map(item => (item.description || '').trim()).filter(Boolean));
       return Array.from(descs).sort((a, b) => a.localeCompare(b));
@@ -1630,13 +1645,120 @@ export default {
     hideManualOriginSug(){ setTimeout(()=>{ this.showManualOriginSug=false; },150); },
     pickManualLocation(l){ this.manualForm.project_location=l; this.showManualLocationSug=false; },
     hideManualLocationSug(){ setTimeout(()=>{ this.showManualLocationSug=false; },150); },
+    pickManualControl(c){ this.manualForm.control_no=c; this.showManualControlSug=false; },
+    hideManualControlSug(){ setTimeout(()=>{ this.showManualControlSug=false; },150); },
+    pickManualUnit(u){ this.manualForm.unit=u; this.showManualUnitSug=false; },
+    hideManualUnitSug(){ setTimeout(()=>{ this.showManualUnitSug=false; },150); },
+    handleManualSuggestionKey(event, field) {
+      const suggestionKey = `${field}Suggestions`;
+      const activeKey = `${field}ActiveIndex`;
+      const hideKey = `hide${field.charAt(0).toUpperCase() + field.slice(1)}Sug`;
+      const pickKey = `pick${field.charAt(0).toUpperCase() + field.slice(1)}`;
+      const suggestions = this[suggestionKey] || [];
+      if (!suggestions.length) return;
+      let index = this[activeKey] ?? 0;
+      if (event.key === 'ArrowDown') {
+        index = index < suggestions.length - 1 ? index + 1 : 0;
+        this[activeKey] = index;
+        return;
+      }
+      if (event.key === 'ArrowUp') {
+        index = index > 0 ? index - 1 : suggestions.length - 1;
+        this[activeKey] = index;
+        return;
+      }
+      if (event.key === 'Enter') {
+        if (index >= 0 && index < suggestions.length) {
+          this[pickKey](suggestions[index]);
+        }
+        return;
+      }
+      if (event.key === 'Escape') {
+        if (typeof this[hideKey] === 'function') this[hideKey]();
+      }
+    },
+    handleBulkSuggestionKey(event, field, rowIndex) {
+      const activeKey = field === 'project' ? 'bulkProjectActiveIndex' : 'bulkMaterialActiveIndex';
+      const suggestions = field === 'project'
+        ? this.bulkProjectSuggestions(this.bulkRows[rowIndex]?.project || '')
+        : this.bulkMaterialSuggestions(this.bulkRows[rowIndex]?.material || '');
+      if (!suggestions.length) return;
+      const currentIndex = this[activeKey][rowIndex] ?? 0;
+      let index = currentIndex;
+      if (event.key === 'ArrowDown') {
+        index = index < suggestions.length - 1 ? index + 1 : 0;
+        this[activeKey].splice(rowIndex, 1, index);
+        return;
+      }
+      if (event.key === 'ArrowUp') {
+        index = index > 0 ? index - 1 : suggestions.length - 1;
+        this[activeKey].splice(rowIndex, 1, index);
+        return;
+      }
+      if (event.key === 'Enter') {
+        const selected = suggestions[index];
+        if (typeof selected !== 'undefined') {
+          if (field === 'project') this.bulkRows[rowIndex].project = selected;
+          else this.bulkRows[rowIndex].material = selected;
+        }
+        return;
+      }
+      if (event.key === 'Escape') {
+        if (field === 'project') this.hideBulkProjectSug();
+        else this.hideBulkMaterialSug();
+      }
+    },
+    handlePOSuggestionKey(event) {
+      const field = this.poSuggestField;
+      if (!field) return;
+      let suggestions = [];
+      let value = '';
+      let rowIndex = null;
+      if (field.startsWith('desc_')) {
+        rowIndex = Number(field.split('_')[1]);
+        value = this.poForm.items[rowIndex]?.description || '';
+        suggestions = this.poSuggest('description', value);
+      } else {
+        value = this.poForm[field] || '';
+        suggestions = this.poSuggest(field, value);
+      }
+      if (!suggestions.length) return;
+      if (this.poSuggestActiveIndex < 0) this.poSuggestActiveIndex = 0;
+      let index = this.poSuggestActiveIndex;
+      if (event.key === 'ArrowDown') {
+        index = index < suggestions.length - 1 ? index + 1 : 0;
+        this.poSuggestActiveIndex = index;
+        return;
+      }
+      if (event.key === 'ArrowUp') {
+        index = index > 0 ? index - 1 : suggestions.length - 1;
+        this.poSuggestActiveIndex = index;
+        return;
+      }
+      if (event.key === 'Enter') {
+        const selected = suggestions[index];
+        if (typeof selected !== 'undefined') {
+          if (rowIndex !== null && this.poForm.items[rowIndex]) {
+            this.poForm.items[rowIndex].description = selected;
+          } else {
+            this.poForm[field] = selected;
+          }
+          this.poSuggestField = '';
+          this.poSuggestActiveIndex = -1;
+        }
+        return;
+      }
+      if (event.key === 'Escape') {
+        this.hidePOSug();
+      }
+    },
     // PO Autocomplete
     poSuggest(field, value) {
       const list = this.poFieldSuggestionsMap[field] || [];
       if (!value) return list.slice(0, 8);
       return list.filter(v => v.toLowerCase().includes(value.toLowerCase())).slice(0, 8);
     },
-    hidePOSug() { setTimeout(() => { this.poSuggestField = ''; }, 180); },
+    hidePOSug() { setTimeout(() => { this.poSuggestField = ''; this.poSuggestActiveIndex = -1; }, 180); },
     // CHANGE 3: sortPODetail method
     sortPODetail(col) {
       if (this.poDetailSortCol === col) {
@@ -1881,13 +2003,21 @@ handleOverlayClick(e) {
       const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'});
       const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`PO_${po.po_no||'Order'}_${this.today}.xls`;a.click();URL.revokeObjectURL(url);
     },
+    async loadManualLogs(){
+      try {
+        this.manualLogs = await getAllManualLogs();
+      } catch(e) {
+        console.error('Failed to load manual logs:', e);
+      }
+    },
     async saveManualLog(){
       if(!this.manualForm.material||!this.manualForm.log_date){ alert('Date and Material are required.'); return; }
       this.manualSaving=true;
       try {
         const data={ log_date:this.manualForm.log_date, control_no:this.manualForm.control_no, material:this.manualForm.material, unit:this.manualForm.unit||'', incharge:this.manualForm.incharge, origin_project:this.manualForm.origin_project, qty:this.manualForm.qty||0, project_location:this.manualForm.project_location, remarks:this.manualForm.remarks };
-        if(this.manualEditMode){ await updateManualLog(this.manualEditId,data); this.manualLogs=this.manualLogs.map(l=>l.id===this.manualEditId?{...l,...data}:l); this.manualEditMode=false; this.manualEditId=null; }
-        else { const id=await addManualLog(data); this.manualLogs.unshift({id,...data}); }
+        if(this.manualEditMode){ await updateManualLog(this.manualEditId,data); this.manualEditMode=false; this.manualEditId=null; }
+        else { await addManualLog(data); }
+        await this.loadManualLogs();
         this.manualForm={ log_date:'', control_no:'', material:'', unit:'', incharge:'', origin_project:'', qty:0, project_location:'', remarks:'' };
       } catch(e){ alert('Error saving: '+e.message); }
       this.manualSaving=false;
@@ -1993,16 +2123,15 @@ handleOverlayClick(e) {
     this.fetchItems();
     this.fetchWithdrawals();
     this.fetchPOs();
-    try { this.manualLogs = await getAllManualLogs(); } catch(e) { console.error(e); }
+    await this.loadManualLogs();
     // AFTER (fixed)
     setTimeout(()=>{this.showHeader=true;},100);
 
-    // ADD THIS inside mounted(), before its closing brace
     document.addEventListener('click', () => {
       this.activeDropdown = null;
     });
 
-  }  // ← closes mounted()
+  }
 };   // ← closes export default
 </script>
 
@@ -2149,7 +2278,8 @@ button:active { transform: translateY(0); }
 
 .suggestions-box { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1.5px solid #0f9d58; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 200; box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
 .suggestion-item { padding: 9px 12px; font-size: 13px; cursor: pointer; color: #333; border-bottom: 1px solid #f0f0f0; transition: all 0.15s; }
-.suggestion-item:hover { background: #e8f5e9; color: #004d26; padding-left: 18px; font-weight: 600; }
+.suggestion-item:hover,
+.suggestion-item.active { background: #e8f5e9; color: #004d26; padding-left: 18px; font-weight: 600; }
 
 .bulk-hint { font-size: 12px; color: #666; margin-bottom: 12px; }
 .bulk-table-wrapper { overflow-x: auto; border-radius: 8px; border: 1.5px solid #c8e6c9; margin-bottom: 14px; -webkit-overflow-scrolling: touch; }
