@@ -1076,9 +1076,9 @@
         <div class="modal-accent-bar"></div>
         <h3 class="modal-title">Withdraw: {{ withdrawItem?.material }}</h3>
         <p class="modal-available">Available Stock: <strong>{{ withdrawItem?.remaining }}</strong></p>
-        <div class="modal-field"><label class="modal-label">Control # (optional)</label><input v-model="withdrawControlNo" placeholder="e.g. RIS-101-26-03-001" ref="wField1" @keydown.enter.prevent="$refs.wField2.focus()"/></div>
-        <div class="modal-field"><label class="modal-label">In-charge (optional)</label><input v-model="withdrawIncharge" placeholder="Person in-charge" ref="wField2" @keydown.enter.prevent="$refs.wField3.focus()"/></div>
-        <div class="modal-field"><label class="modal-label">Project Location *</label><input v-model="withdrawProjectLocation" placeholder="Enter project location" ref="wField3" @keydown.enter.prevent="$refs.wField4.focus()"/></div>
+        <div class="modal-field" style="position:relative"><label class="modal-label">Control # (optional)</label><input v-model="withdrawControlNo" placeholder="e.g. RIS-101-26-03-001" ref="wField1" @input="showWithdrawControlSug=true; withdrawControlActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'withdrawControl')" @keydown.up.prevent="handleManualSuggestionKey($event,'withdrawControl')" @keydown.enter.prevent="handleManualSuggestionKey($event,'withdrawControl')" @keydown.esc.prevent="showWithdrawControlSug=false" @blur="setTimeout(()=>showWithdrawControlSug=false,150); $refs.wField2.focus()" autocomplete="off"/><div v-if="showWithdrawControlSug && uniqueManualControlNos.length" class="suggestions-box"><div v-for="(c, idx) in uniqueManualControlNos.filter(x=>x.toLowerCase().includes(withdrawControlNo.toLowerCase()))" :key="c" class="suggestion-item" :class="{ active: withdrawControlActiveIndex===idx }" @mousedown.prevent="withdrawControlNo=c; showWithdrawControlSug=false">{{ c }}</div></div></div>
+        <div class="modal-field" style="position:relative"><label class="modal-label">In-charge (optional)</label><input v-model="withdrawIncharge" placeholder="Person in-charge" ref="wField2" @input="showWithdrawInchargeSug=true; withdrawInchargeActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'withdrawIncharge')" @keydown.up.prevent="handleManualSuggestionKey($event,'withdrawIncharge')" @keydown.enter.prevent="handleManualSuggestionKey($event,'withdrawIncharge')" @keydown.esc.prevent="showWithdrawInchargeSug=false" @blur="setTimeout(()=>showWithdrawInchargeSug=false,150); $refs.wField3.focus()" autocomplete="off"/><div v-if="showWithdrawInchargeSug && uniqueManualIncharge.length" class="suggestions-box"><div v-for="(i, idx) in uniqueManualIncharge.filter(x=>x.toLowerCase().includes(withdrawIncharge.toLowerCase()))" :key="i" class="suggestion-item" :class="{ active: withdrawInchargeActiveIndex===idx }" @mousedown.prevent="withdrawIncharge=i; showWithdrawInchargeSug=false">{{ i }}</div></div></div>
+        <div class="modal-field" style="position:relative"><label class="modal-label">Project Location *</label><input v-model="withdrawProjectLocation" placeholder="Enter project location" ref="wField3" @input="showWithdrawLocationSug=true; withdrawLocationActiveIndex=0" @keydown.down.prevent="handleManualSuggestionKey($event,'withdrawLocation')" @keydown.up.prevent="handleManualSuggestionKey($event,'withdrawLocation')" @keydown.enter.prevent="handleManualSuggestionKey($event,'withdrawLocation')" @keydown.esc.prevent="showWithdrawLocationSug=false" @blur="setTimeout(()=>showWithdrawLocationSug=false,150); $refs.wField4.focus()" autocomplete="off"/><div v-if="showWithdrawLocationSug && uniqueManualLocations.length" class="suggestions-box"><div v-for="(l, idx) in uniqueManualLocations.filter(x=>x.toLowerCase().includes(withdrawProjectLocation.toLowerCase()))" :key="l" class="suggestion-item" :class="{ active: withdrawLocationActiveIndex===idx }" @mousedown.prevent="withdrawProjectLocation=l; showWithdrawLocationSug=false">{{ l }}</div></div></div>
         <div class="modal-field"><label class="modal-label">Quantity *</label><input v-model.number="withdrawAmount" type="number" min="1" :max="withdrawItem?.remaining" placeholder="Quantity to withdraw" ref="wField4" @keydown.enter.prevent="$refs.wField5.focus()"/></div>
         <div class="modal-field"><label class="modal-label">Date *</label><input v-model="withdrawDate" type="date" ref="wField5" @keydown.enter.prevent="$refs.wField6.focus()"/></div>
         <div class="modal-field"><label class="modal-label">Remarks (optional)</label><input v-model="withdrawRemarks" placeholder="Optional notes" ref="wField6" @keydown.enter.prevent="confirmWithdraw()"/></div>
@@ -1094,9 +1094,9 @@
       <div class="modal modal-animate">
         <div class="modal-accent-bar"></div>
         <h3 class="modal-title">Edit Withdrawal</h3>
-        <div class="modal-field"><label class="modal-label">Control #</label><input v-model="editWithdrawalData.control_no" placeholder="e.g. RIS-101-26-03-001"/></div>
-        <div class="modal-field"><label class="modal-label">In-charge</label><input v-model="editWithdrawalData.incharge" placeholder="Person in-charge"/></div>
-        <div class="modal-field"><label class="modal-label">Project Location *</label><input v-model="editWithdrawalData.project_location" placeholder="Enter project location"/></div>
+        <div class="modal-field" style="position:relative"><label class="modal-label">Control #</label><input v-model="editWithdrawalData.control_no" placeholder="e.g. RIS-101-26-03-001" @input="showEditWithdrawControlSug=true; editWithdrawControlActiveIndex=0" @keydown.down.prevent="handleWithdrawalEditSuggestionKey($event,'control_no')" @keydown.up.prevent="handleWithdrawalEditSuggestionKey($event,'control_no')" @keydown.enter.prevent="handleWithdrawalEditSuggestionKey($event,'control_no')" @keydown.esc.prevent="showEditWithdrawControlSug=false" @blur="setTimeout(()=>showEditWithdrawControlSug=false,150)" autocomplete="off"/><div v-if="showEditWithdrawControlSug && uniqueManualControlNos.length" class="suggestions-box"><div v-for="(c, idx) in uniqueManualControlNos.filter(x=>x.toLowerCase().includes((editWithdrawalData.control_no||'').toLowerCase()))" :key="c" class="suggestion-item" :class="{ active: editWithdrawControlActiveIndex===idx }" @mousedown.prevent="editWithdrawalData.control_no=c; showEditWithdrawControlSug=false">{{ c }}</div></div></div>
+        <div class="modal-field" style="position:relative"><label class="modal-label">In-charge</label><input v-model="editWithdrawalData.incharge" placeholder="Person in-charge" @input="showEditWithdrawInchargeSug=true; editWithdrawInchargeActiveIndex=0" @keydown.down.prevent="handleWithdrawalEditSuggestionKey($event,'incharge')" @keydown.up.prevent="handleWithdrawalEditSuggestionKey($event,'incharge')" @keydown.enter.prevent="handleWithdrawalEditSuggestionKey($event,'incharge')" @keydown.esc.prevent="showEditWithdrawInchargeSug=false" @blur="setTimeout(()=>showEditWithdrawInchargeSug=false,150)" autocomplete="off"/><div v-if="showEditWithdrawInchargeSug && uniqueManualIncharge.length" class="suggestions-box"><div v-for="(i, idx) in uniqueManualIncharge.filter(x=>x.toLowerCase().includes((editWithdrawalData.incharge||'').toLowerCase()))" :key="i" class="suggestion-item" :class="{ active: editWithdrawInchargeActiveIndex===idx }" @mousedown.prevent="editWithdrawalData.incharge=i; showEditWithdrawInchargeSug=false">{{ i }}</div></div></div>
+        <div class="modal-field" style="position:relative"><label class="modal-label">Project Location *</label><input v-model="editWithdrawalData.project_location" placeholder="Enter project location" @input="showEditWithdrawLocationSug=true; editWithdrawLocationActiveIndex=0" @keydown.down.prevent="handleWithdrawalEditSuggestionKey($event,'project_location')" @keydown.up.prevent="handleWithdrawalEditSuggestionKey($event,'project_location')" @keydown.enter.prevent="handleWithdrawalEditSuggestionKey($event,'project_location')" @keydown.esc.prevent="showEditWithdrawLocationSug=false" @blur="setTimeout(()=>showEditWithdrawLocationSug=false,150)" autocomplete="off"/><div v-if="showEditWithdrawLocationSug && uniqueManualLocations.length" class="suggestions-box"><div v-for="(l, idx) in uniqueManualLocations.filter(x=>x.toLowerCase().includes((editWithdrawalData.project_location||'').toLowerCase()))" :key="l" class="suggestion-item" :class="{ active: editWithdrawLocationActiveIndex===idx }" @mousedown.prevent="editWithdrawalData.project_location=l; showEditWithdrawLocationSug=false">{{ l }}</div></div></div>
         <div class="modal-field"><label class="modal-label">Qty Used *</label><input v-model.number="editWithdrawalData.quantity_used" type="number" min="1"/></div>
         <div class="modal-field"><label class="modal-label">Date *</label><input v-model="editWithdrawalData.date_str" type="date"/></div>
         <div class="modal-field"><label class="modal-label">Remarks</label><input v-model="editWithdrawalData.remarks" placeholder="Optional notes"/></div>
@@ -1244,6 +1244,14 @@ export default {
       withdrawModal:false, withdrawItem:null, withdrawAmount:0,
       withdrawControlNo:'', withdrawIncharge:'',
       withdrawProjectLocation:'', withdrawDate:'', withdrawRemarks:'',
+      showWithdrawControlSug:false, withdrawControlActiveIndex:-1,
+      showWithdrawInchargeSug:false, withdrawInchargeActiveIndex:-1,
+      showWithdrawLocationSug:false, withdrawLocationActiveIndex:-1,
+      showWithdrawRemarksSug:false, withdrawRemarksActiveIndex:-1,
+      showEditWithdrawControlSug:false, editWithdrawControlActiveIndex:-1,
+      showEditWithdrawInchargeSug:false, editWithdrawInchargeActiveIndex:-1,
+      showEditWithdrawLocationSug:false, editWithdrawLocationActiveIndex:-1,
+      showEditWithdrawRemarksSug:false, editWithdrawRemarksActiveIndex:-1,
       editWithdrawalModal:false, editWithdrawalData:{},
       showArchiveModal:false, archiveYear: new Date().getFullYear()-1, archiving:false,
       today: new Date().toLocaleDateString('en-US',{ year:'numeric', month:'long', day:'numeric' }),
@@ -1750,6 +1758,43 @@ export default {
       }
       if (event.key === 'Escape') {
         this.hidePOSug();
+      }
+    },
+    handleWithdrawalEditSuggestionKey(event, field) {
+      const suggestionKey = field === 'control_no' ? 'uniqueManualControlNos'
+        : field === 'incharge' ? 'uniqueManualIncharge'
+        : field === 'project_location' ? 'uniqueManualLocations'
+        : 'uniqueManualLocations';
+      const activeKey = field === 'control_no' ? 'editWithdrawControlActiveIndex'
+        : field === 'incharge' ? 'editWithdrawInchargeActiveIndex'
+        : 'editWithdrawLocationActiveIndex';
+      const showKey = field === 'control_no' ? 'showEditWithdrawControlSug'
+        : field === 'incharge' ? 'showEditWithdrawInchargeSug'
+        : 'showEditWithdrawLocationSug';
+      const value = this.editWithdrawalData[field] || '';
+      const allSuggestions = this[suggestionKey];
+      const suggestions = allSuggestions.filter(x => x.toLowerCase().includes(value.toLowerCase()));
+      if (!suggestions.length) return;
+      let index = this[activeKey] ?? 0;
+      if (event.key === 'ArrowDown') {
+        index = index < suggestions.length - 1 ? index + 1 : 0;
+        this[activeKey] = index;
+        return;
+      }
+      if (event.key === 'ArrowUp') {
+        index = index > 0 ? index - 1 : suggestions.length - 1;
+        this[activeKey] = index;
+        return;
+      }
+      if (event.key === 'Enter') {
+        if (index >= 0 && index < suggestions.length) {
+          this.editWithdrawalData[field] = suggestions[index];
+        }
+        this[showKey] = false;
+        return;
+      }
+      if (event.key === 'Escape') {
+        this[showKey] = false;
       }
     },
     // PO Autocomplete
